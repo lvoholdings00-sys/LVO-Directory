@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LVO Command Center</title>
+
+<!-- ─── CLERK ─── -->
+<!-- REPLACE THE KEY BELOW WITH YOUR ACTUAL PUBLISHABLE KEY -->
+<script
+  async
+  crossorigin="anonymous"
+  data-clerk-publishable-key="pk_live_YOUR_KEY_HERE"
+  src="https://YOUR_FRONTEND_API.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  type="text/javascript"
+></script>
+<!-- NOTE: The src URL also changes per your Clerk app — grab both from your Clerk dashboard → API Keys -->
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,7 +50,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ─── GRAIN OVERLAY ─── */
 body::before {
   content: '';
   position: fixed;
@@ -49,7 +60,7 @@ body::before {
   opacity: 0.4;
 }
 
-/* ─── AUTH SCREEN ─── */
+/* ─── AUTH / CLERK SCREEN ─── */
 #auth-screen {
   position: fixed;
   inset: 0;
@@ -106,38 +117,23 @@ body::before {
   font-size: 10px;
   letter-spacing: 0.35em;
   color: var(--text-muted);
-  margin-bottom: 48px;
+  margin-bottom: 36px;
   text-transform: uppercase;
 }
 
-.auth-input-wrap {
-  position: relative;
-  width: 320px;
-  margin-bottom: 12px;
+/* Clerk sign-in container styling */
+#clerk-sign-in-container {
+  width: 360px;
+  max-width: 90vw;
 }
 
-#auth-input {
-  width: 100%;
-  background: transparent;
-  border: 1px solid var(--border-gold);
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.2em;
-  padding: 14px 20px;
-  outline: none;
-  text-align: center;
-  transition: border-color 0.3s;
-}
-
-#auth-input::placeholder { color: var(--text-muted); letter-spacing: 0.15em; }
-#auth-input:focus { border-color: var(--gold); }
-#auth-input.error { border-color: var(--red-light); animation: shake 0.3s ease; }
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+/* Override Clerk component styles to match LVO aesthetic */
+#clerk-sign-in-container .cl-card,
+#clerk-sign-in-container [data-clerk-card] {
+  background: transparent !important;
+  border: 1px solid var(--border-gold) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .auth-hint {
@@ -145,7 +141,7 @@ body::before {
   letter-spacing: 0.3em;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 /* ─── APP SHELL ─── */
@@ -237,24 +233,11 @@ body::before {
 
 .auth-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
 
-.lock-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  padding: 8px 16px;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: border-color 0.2s, color 0.2s;
+/* Clerk user button wrapper in sidebar */
+#clerk-user-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
 }
-
-.lock-btn:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ─── MAIN CONTENT ─── */
 #main {
@@ -624,7 +607,7 @@ body::before {
 
 .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
-/* ─── NOTIFICATION BELL ─── */
+/* ─── TOP BAR ─── */
 .top-bar {
   position: sticky;
   top: 0;
@@ -640,6 +623,20 @@ body::before {
 .top-bar-left { font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; }
 
 .top-bar-right { display: flex; align-items: center; gap: 16px; }
+
+.top-bar-user {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+/* Clerk UserButton override in top bar */
+#clerk-topbar-btn .cl-userButtonBox,
+#clerk-topbar-btn .cl-avatarBox {
+  border-radius: 0 !important;
+  border: 1px solid var(--border-gold) !important;
+}
 
 .notif-btn {
   position: relative;
@@ -786,43 +783,61 @@ body::before {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+/* ─── CLERK APPEARANCE OVERRIDES ─── */
+/* These target Clerk's generated class names to keep the LVO aesthetic */
+.cl-rootBox { font-family: 'DM Mono', monospace !important; }
+.cl-card { background: transparent !important; border: 1px solid var(--border-gold) !important; border-radius: 0 !important; box-shadow: none !important; }
+.cl-headerTitle { font-family: 'Cormorant Garamond', serif !important; font-weight: 300 !important; letter-spacing: 0.1em !important; color: var(--text) !important; }
+.cl-headerSubtitle { color: var(--text-muted) !important; font-size: 11px !important; }
+.cl-formFieldLabel { font-family: 'DM Mono', monospace !important; font-size: 9px !important; letter-spacing: 0.25em !important; color: var(--text-muted) !important; text-transform: uppercase !important; }
+.cl-formFieldInput { background: var(--card) !important; border: none !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; color: var(--text) !important; font-family: 'DM Mono', monospace !important; }
+.cl-formFieldInput:focus { border-bottom-color: var(--gold) !important; }
+.cl-formButtonPrimary { background: var(--gold) !important; color: var(--black) !important; border-radius: 0 !important; font-family: 'DM Mono', monospace !important; font-size: 10px !important; letter-spacing: 0.2em !important; text-transform: uppercase !important; box-shadow: none !important; }
+.cl-formButtonPrimary:hover { background: var(--gold-light) !important; }
+.cl-footerActionLink { color: var(--gold) !important; }
+.cl-dividerLine { background: var(--border) !important; }
+.cl-dividerText { color: var(--text-muted) !important; }
+.cl-socialButtonsIconButton { background: transparent !important; border: 1px solid var(--border) !important; border-radius: 0 !important; }
+.cl-socialButtonsIconButton:hover { border-color: var(--gold) !important; }
+.cl-identityPreviewText { color: var(--text-dim) !important; }
+.cl-userButtonBox { border-radius: 0 !important; }
+.cl-avatarBox { border-radius: 0 !important; border: 1px solid var(--border-gold) !important; }
+.cl-userButtonPopoverCard { background: var(--surface) !important; border: 1px solid var(--border-gold) !important; border-radius: 0 !important; }
+.cl-userPreviewTextContainer { color: var(--text) !important; }
+.cl-userButtonPopoverActionButton { color: var(--text-dim) !important; border-radius: 0 !important; }
+.cl-userButtonPopoverActionButton:hover { background: var(--gold-glow) !important; color: var(--gold) !important; }
+.cl-userButtonPopoverActionButtonText { font-family: 'DM Mono', monospace !important; font-size: 11px !important; }
+.cl-internal-button { border-radius: 0 !important; }
 </style>
 </head>
 <body>
 
-<!-- ─── AUTH SCREEN ─── -->
+<!-- ─── AUTH SCREEN (Clerk) ─── -->
 <div id="auth-screen">
   <div class="auth-glow"></div>
   <svg class="auth-moth" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-    <!-- Body -->
     <ellipse cx="60" cy="62" rx="5" ry="18" fill="#7a5f1a"/>
     <ellipse cx="60" cy="62" rx="3.5" ry="16" fill="#b8953f"/>
-    <!-- Head -->
     <circle cx="60" cy="42" r="6" fill="#b8953f"/>
-    <!-- Antennae -->
     <line x1="60" y1="38" x2="44" y2="24" stroke="#b8953f" stroke-width="1.2"/>
     <circle cx="43" cy="23" r="2" fill="#d4a853"/>
     <line x1="60" y1="38" x2="76" y2="24" stroke="#b8953f" stroke-width="1.2"/>
     <circle cx="77" cy="23" r="2" fill="#d4a853"/>
-    <!-- Left wings -->
     <g class="moth-wing-left">
       <path d="M57 55 Q30 35 18 50 Q14 70 30 75 Q45 78 57 68 Z" fill="#b8953f" opacity="0.85"/>
       <path d="M57 65 Q35 68 25 82 Q28 95 42 90 Q54 85 57 72 Z" fill="#9a7a30" opacity="0.8"/>
-      <!-- wing veins -->
       <path d="M57 57 Q40 45 22 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
       <path d="M57 62 Q42 58 28 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
       <path d="M57 66 Q45 72 32 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
     </g>
-    <!-- Right wings -->
     <g class="moth-wing-right">
       <path d="M63 55 Q90 35 102 50 Q106 70 90 75 Q75 78 63 68 Z" fill="#b8953f" opacity="0.85"/>
       <path d="M63 65 Q85 68 95 82 Q92 95 78 90 Q66 85 63 72 Z" fill="#9a7a30" opacity="0.8"/>
-      <!-- wing veins -->
       <path d="M63 57 Q80 45 98 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
       <path d="M63 62 Q78 58 92 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
       <path d="M63 66 Q75 72 88 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
     </g>
-    <!-- Eye spots -->
     <circle cx="35" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
     <circle cx="35" cy="60" r="3" fill="#d4a853" opacity="0.4"/>
     <circle cx="85" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
@@ -830,10 +845,11 @@ body::before {
   </svg>
   <div class="auth-title">L V O</div>
   <div class="auth-subtitle">Holdings LLC</div>
-  <div class="auth-input-wrap">
-    <input type="password" id="auth-input" placeholder="Enter access code" autocomplete="off">
-  </div>
-  <div class="auth-hint">Private Command Center</div>
+
+  <!-- Clerk mounts here -->
+  <div id="clerk-sign-in-container"></div>
+
+  <div class="auth-hint" id="auth-loading-hint">Initializing secure access...</div>
 </div>
 
 <!-- ─── APP ─── -->
@@ -846,11 +862,12 @@ body::before {
     </div>
     <div class="sidebar-nav" id="sidebar-nav"></div>
     <div class="sidebar-bottom">
-      <div class="auth-status"><span class="auth-dot"></span>Authenticated</div>
-      <button class="lock-btn" onclick="lockDashboard()">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Lock
-      </button>
+      <div class="auth-status">
+        <span class="auth-dot"></span>
+        <span id="sidebar-user-name">Authenticated</span>
+      </div>
+      <!-- Clerk UserButton mounts here in sidebar -->
+      <div id="clerk-user-btn"></div>
     </div>
   </nav>
 
@@ -863,10 +880,11 @@ body::before {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="notif-count" id="notif-count">0</span>
         </button>
+        <!-- Clerk UserButton also in top bar -->
+        <div id="clerk-topbar-btn"></div>
       </div>
     </div>
 
-    <!-- PAGES INJECTED BY JS -->
     <div id="pages-container"></div>
   </div>
 </div>
@@ -895,12 +913,189 @@ body::before {
 </div>
 
 <script>
-// ─── STATE ───
-const PASSWORD = 'LVO2025';
+// ════════════════════════════════════════════
+// CLERK CONFIG
+// ════════════════════════════════════════════
+// Allowed redirect domains — update these if your domains change
+const CLERK_ALLOWED_DOMAINS = [
+  'lvo-cloud.cloud',
+  'dash.lvo-cloud.cloud',
+  'online.lvo-cloud.cloud'
+];
+
+// Clerk appearance overrides (matches LVO aesthetic)
+const clerkAppearance = {
+  variables: {
+    colorBackground: '#0a0a0a',
+    colorText: '#e8e6e0',
+    colorPrimary: '#b8953f',
+    colorInputBackground: '#161616',
+    colorInputText: '#e8e6e0',
+    borderRadius: '0px',
+    fontFamily: "'DM Mono', monospace",
+    fontSize: '13px'
+  },
+  elements: {
+    card: {
+      background: 'transparent',
+      border: '1px solid #b8953f44',
+      boxShadow: 'none',
+      borderRadius: '0'
+    },
+    headerTitle: {
+      fontFamily: "'Cormorant Garamond', serif",
+      fontWeight: '300',
+      letterSpacing: '0.1em',
+      color: '#e8e6e0'
+    },
+    headerSubtitle: { color: '#5a5650', fontSize: '11px' },
+    formFieldLabel: {
+      fontFamily: "'DM Mono', monospace",
+      fontSize: '9px',
+      letterSpacing: '0.25em',
+      color: '#5a5650',
+      textTransform: 'uppercase'
+    },
+    formFieldInput: {
+      background: '#161616',
+      border: 'none',
+      borderBottom: '1px solid #2a2a2a',
+      borderRadius: '0',
+      color: '#e8e6e0',
+      fontFamily: "'DM Mono', monospace"
+    },
+    formButtonPrimary: {
+      background: '#b8953f',
+      color: '#0a0a0a',
+      borderRadius: '0',
+      fontFamily: "'DM Mono', monospace",
+      fontSize: '10px',
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      boxShadow: 'none'
+    },
+    footerActionLink: { color: '#b8953f' },
+    dividerLine: { background: '#2a2a2a' },
+    dividerText: { color: '#5a5650' },
+    socialButtonsIconButton: {
+      background: 'transparent',
+      border: '1px solid #2a2a2a',
+      borderRadius: '0'
+    },
+    avatarBox: { borderRadius: '0', border: '1px solid #b8953f44' },
+    userButtonPopoverCard: {
+      background: '#111111',
+      border: '1px solid #b8953f44',
+      borderRadius: '0'
+    },
+    userButtonPopoverActionButton: { borderRadius: '0' }
+  }
+};
+
+// ════════════════════════════════════════════
+// CLERK INIT
+// ════════════════════════════════════════════
+window.addEventListener('load', async () => {
+  try {
+    await Clerk.load({
+      allowedRedirectOrigins: CLERK_ALLOWED_DOMAINS.map(d => `https://${d}`)
+    });
+  } catch(e) {
+    // Clerk failed to load (e.g. wrong key) — show fallback hint
+    document.getElementById('auth-loading-hint').textContent = 'Auth service unavailable. Check your Clerk key.';
+    document.getElementById('auth-loading-hint').style.color = '#e05555';
+    console.error('Clerk load error:', e);
+    return;
+  }
+
+  const authScreen    = document.getElementById('auth-screen');
+  const appEl         = document.getElementById('app');
+  const signInTarget  = document.getElementById('clerk-sign-in-container');
+  const loadingHint   = document.getElementById('auth-loading-hint');
+  const sidebarName   = document.getElementById('sidebar-user-name');
+
+  let signInMounted = false;
+  let userBtnMounted = false;
+
+  function showAuth() {
+    authScreen.style.display = 'flex';
+    authScreen.style.opacity = '1';
+    appEl.style.display = 'none';
+    appEl.classList.remove('visible');
+    loadingHint.textContent = 'Private Command Center';
+
+    if (!signInMounted) {
+      Clerk.mountSignIn(signInTarget, {
+        appearance: clerkAppearance,
+        routing: 'virtual',
+        // After sign-in, stay on current domain
+        afterSignInUrl: window.location.href,
+        afterSignUpUrl: window.location.href
+      });
+      signInMounted = true;
+    }
+  }
+
+  function showApp(user) {
+    // Fade out auth screen
+    authScreen.style.transition = 'opacity 0.5s';
+    authScreen.style.opacity = '0';
+    setTimeout(() => {
+      authScreen.style.display = 'none';
+      appEl.classList.add('visible');
+
+      // Mount Clerk UserButton in top bar & sidebar
+      if (!userBtnMounted) {
+        Clerk.mountUserButton(document.getElementById('clerk-topbar-btn'), {
+          appearance: clerkAppearance
+        });
+        Clerk.mountUserButton(document.getElementById('clerk-user-btn'), {
+          appearance: clerkAppearance
+        });
+        userBtnMounted = true;
+      }
+
+      // Show user's name in sidebar
+      const displayName = user.firstName
+        ? user.firstName + (user.lastName ? ' ' + user.lastName[0] + '.' : '')
+        : (user.primaryEmailAddress?.emailAddress || 'Authenticated');
+      sidebarName.textContent = displayName;
+
+      // Init dashboard if not already done
+      if (!window._appInited) {
+        window._appInited = true;
+        initApp();
+      }
+    }, 500);
+  }
+
+  // Check initial state
+  if (Clerk.user) {
+    showApp(Clerk.user);
+  } else {
+    showAuth();
+  }
+
+  // Listen for auth state changes
+  Clerk.addListener(({ user }) => {
+    if (user) {
+      showApp(user);
+    } else {
+      // Signed out — go back to auth
+      window._appInited = false;
+      userBtnMounted = false;
+      signInMounted = false;
+      showAuth();
+    }
+  });
+});
+
+// ════════════════════════════════════════════
+// DASHBOARD STATE & LOGIC
+// ════════════════════════════════════════════
 let allRequests = [];
 let notifOpen = false;
 
-// ─── NAV CONFIG ───
 const divisions = [
   { id: 'overview', label: 'Overview', sub: '', icon: 'grid' },
   { id: 'vindex', label: 'Vindex', sub: 'The Gasoline', icon: 'database' },
@@ -927,44 +1122,8 @@ const icons = {
   wind: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>`,
   truck: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
   triangle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>`,
-  plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
-  bell: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
 };
 
-// ─── AUTH ───
-document.getElementById('auth-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') checkPassword();
-  this.classList.remove('error');
-});
-
-function checkPassword() {
-  const val = document.getElementById('auth-input').value;
-  if (val === PASSWORD) {
-    document.getElementById('auth-screen').style.opacity = '0';
-    document.getElementById('auth-screen').style.transition = 'opacity 0.5s';
-    setTimeout(() => {
-      document.getElementById('auth-screen').style.display = 'none';
-      const app = document.getElementById('app');
-      app.classList.add('visible');
-      initApp();
-    }, 500);
-  } else {
-    const inp = document.getElementById('auth-input');
-    inp.classList.add('error');
-    inp.value = '';
-  }
-}
-
-function lockDashboard() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('app').classList.remove('visible');
-  const auth = document.getElementById('auth-screen');
-  auth.style.display = 'flex';
-  auth.style.opacity = '1';
-  document.getElementById('auth-input').value = '';
-}
-
-// ─── INIT APP ───
 function initApp() {
   buildSidebar();
   buildAllPages();
@@ -993,6 +1152,7 @@ function navigate(id) {
   if (pageEl) pageEl.classList.add('active');
   const d = divisions.find(x => x.id === id);
   document.getElementById('top-bar-label').textContent = d ? (d.label + (d.sub ? ' — ' + d.sub : '')) : 'LVO';
+  if (id === 'capital') setTimeout(drawCapitalChart, 150);
 }
 
 // ─── REQUEST SYSTEM ───
@@ -1029,7 +1189,9 @@ function updateNotifPanel() {
 }
 
 function appendToRequestLog(divisionId, req) {
-  const log = document.getElementById('reqlog-' + divisionId);
+  const divObj = divisions.find(d => d.label === divisionId || d.id === divisionId);
+  const logId = divObj ? 'reqlog-' + divObj.id : null;
+  const log = logId ? document.getElementById(logId) : null;
   if (!log) return;
   const empty = log.querySelector('.req-empty');
   if (empty) empty.remove();
@@ -1103,7 +1265,6 @@ function reqLog(divId) {
   return `<div class="request-log"><div class="request-log-title">Submitted Requests</div><div id="reqlog-${divId}"><div class="req-empty" style="font-size:11px;color:var(--text-muted);padding:12px 0;">No requests yet.</div></div></div>`;
 }
 
-// ─── TABLE BADGE ───
 function badge(status) {
   const map = { 'Active':'active','Pending':'pending','Development':'development','Complete':'complete','Completed':'completed','Blocked':'blocked','Alert':'alert','Secured':'secured','Overdue':'overdue','Sold':'pending','In Development':'development','Submitted':'submitted','In Review':'review' };
   const cls = map[status] || 'pending';
@@ -1114,23 +1275,27 @@ function tierBadge(tier) {
   return `<span class="badge badge-${tier.toLowerCase()}">${tier}</span>`;
 }
 
-// ─── ADD ROW TO TABLE ───
-function addTableRow(tableId, cells) {
-  const tbody = document.querySelector('#' + tableId + ' tbody');
-  if (!tbody) return;
-  const tr = document.createElement('tr');
-  tr.innerHTML = cells.map(c => `<td>${c}</td>`).join('');
-  tbody.appendChild(tr);
+function updateRowStatus(sel, tdIndex) {
+  const td = sel.closest('tr').querySelectorAll('td')[tdIndex];
+  td.innerHTML = badge(sel.value);
 }
 
-// ─── STATUS CHANGE ───
-function changeStatus(selectEl, badgeId) {
-  const val = selectEl.value;
-  const el = document.getElementById(badgeId);
-  if (el) el.outerHTML = badge(val);
+function updateBadgeFromSelect(sel, id) {
+  updateRowStatus(sel, 2);
 }
 
-// ─── BUILD ALL PAGES ───
+function switchTab(el, targetId, groupId) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.closest('.page, .section').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(targetId).classList.add('active');
+}
+
+// ════════════════════════════════════════════
+// PAGE BUILDERS
+// ════════════════════════════════════════════
+
 function buildAllPages() {
   const container = document.getElementById('pages-container');
   container.innerHTML = [
@@ -1148,9 +1313,7 @@ function buildAllPages() {
   ].join('');
 }
 
-// ────────────────────────────
-// OVERVIEW
-// ────────────────────────────
+// ─── OVERVIEW ───
 function buildOverview() {
   return `<div class="page" id="page-overview">
   <div class="page-header">
@@ -1161,14 +1324,12 @@ function buildOverview() {
     <div class="page-dba">Legion V. Omni-Operation Holdings | LVOO</div>
     <div class="page-desc">Empire-wide command and control. Monitor all divisions, submit cross-division requests, and manage the full LVO portfolio from a single interface.</div>
   </div>
-
   <div class="kpi-grid kpi-grid-4">
     <div class="kpi-card"><div class="kpi-label">Portfolio Revenue</div><div class="kpi-value">$4.2M</div><div class="kpi-sub gold">+12% YoY</div></div>
     <div class="kpi-card"><div class="kpi-label">Active Divisions</div><div class="kpi-value">11</div><div class="kpi-sub">Fully operational</div></div>
     <div class="kpi-card"><div class="kpi-label">Active Partners</div><div class="kpi-value">38</div><div class="kpi-sub">Alliance network</div></div>
     <div class="kpi-card"><div class="kpi-label">Active Deals</div><div class="kpi-value">12</div><div class="kpi-sub">In pipeline</div></div>
   </div>
-
   <div class="section">
     <div class="section-header">
       <div class="section-title">Division Health</div>
@@ -1186,8 +1347,7 @@ function buildOverview() {
         {id:'alatus',name:'Alatus',nick:'The Wing',status:'Active',note:'42 flights · 4 drones'},
         {id:'pedes',name:'Pedes',nick:'The Legs',status:'Active',note:'4 vehicles · 218 runs'},
         {id:'petra',name:'Petra',nick:'The Bedrock',status:'Active',note:'4 active builds'},
-        {id:'capital',name:'LVO Capital',nick:'The Reservoir',status:'Pending',note:'Capital reallocation pending'},
-      ].slice(0,10).map(d => `
+      ].map(d => `
         <div class="division-card" onclick="navigate('${d.id}')">
           <div class="division-card-header">
             <div class="division-card-name">${d.name}</div>
@@ -1199,7 +1359,6 @@ function buildOverview() {
       `).join('')}
     </div>
   </div>
-
   <div class="two-col">
     <div class="section">
       <div class="section-title">Recent Activity</div>
@@ -1207,7 +1366,7 @@ function buildOverview() {
         <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-time">Today · 10:20</div><div class="activity-text">GRO-08 quarterly safety inspection passed</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">Yesterday</div><div class="activity-text">GRO-07 enrolled 2 new residents — academic intake complete</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">2 days ago</div><div class="activity-text">Life-skills curriculum updated across all facilities</div></div></div>
-        <div class="activity-item"><div class="activity-dot gold" style="background:var(--gold-dim)"></div><div><div class="activity-time">3 days ago</div><div class="activity-text">GRO-11 construction milestone reached — Petra</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim)"></div><div><div class="activity-time">3 days ago</div><div class="activity-text">GRO-11 construction milestone reached — Petra</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">4 days ago</div><div class="activity-text">B1 Escalade assigned to Pedes executive route</div></div></div>
         <div class="activity-item"><div class="activity-dot red"></div><div><div class="activity-time">5 days ago</div><div class="activity-text">Security alert — A3 Commercial Hub under review (Custodia)</div></div></div>
       </div>
@@ -1260,9 +1419,7 @@ function submitEmpireReq() {
   showToast('Request routed to ' + (d ? d.label : divId));
 }
 
-// ────────────────────────────
-// VINDEX
-// ────────────────────────────
+// ─── VINDEX ───
 let vindexASeries = [
   {tag:'A1',type:'Group Home',status:'Active',value:'$410K'},
   {tag:'A2',type:'Group Home',status:'Active',value:'$385K'},
@@ -1307,7 +1464,7 @@ function buildVindex() {
         </div>
         <table class="data-table" id="vindex-a-table">
           <thead><tr><th>Tag</th><th>Type</th><th>Status</th><th>Value</th><th>Action</th></tr></thead>
-          <tbody>${vindexASeries.map(r=>`<tr><td class="gold-link">${r.tag}</td><td>${r.type}</td><td>${badge(r.status)}</td><td>${r.value}</td><td><select class="status-select" onchange="updateBadgeFromSelect(this,'${r.tag}-status')"><option>Active</option><option>Pending</option><option>Development</option><option>Complete</option></select></td></tr>`).join('')}</tbody>
+          <tbody>${vindexASeries.map(r=>`<tr><td class="gold-link">${r.tag}</td><td>${r.type}</td><td>${badge(r.status)}</td><td>${r.value}</td><td><select class="status-select" onchange="updateRowStatus(this,2)"><option>Active</option><option>Pending</option><option>Development</option><option>Complete</option></select></td></tr>`).join('')}</tbody>
         </table>
       </div>
       <div class="tab-content" id="vtab-b">
@@ -1324,15 +1481,6 @@ function buildVindex() {
   </div>
   ${reqLog('vindex')}
   </div>`;
-}
-
-function updateRowStatus(sel, tdIndex) {
-  const td = sel.closest('tr').querySelectorAll('td')[tdIndex];
-  td.innerHTML = badge(sel.value);
-}
-
-function updateBadgeFromSelect(sel, id) {
-  updateRowStatus(sel, 2);
 }
 
 function openAddAsset(type) {
@@ -1389,9 +1537,7 @@ function addVehicle() {
   closeModal(); showToast(next + ' added to B-Series');
 }
 
-// ────────────────────────────
-// OPERATIONS
-// ────────────────────────────
+// ─── OPERATIONS ───
 let groFacilities = [
   {id:'GRO-05',name:'Haven House',loc:'Houston, TX',cap:'8/8',status:'Active'},
   {id:'GRO-07',name:'Cedar Point',loc:'Cypress, TX',cap:'6/8',status:'Active'},
@@ -1435,7 +1581,7 @@ function buildOperations() {
         <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-time">10:20</div><div class="activity-text">GRO-08 quarterly safety inspection passed</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">Yesterday</div><div class="activity-text">GRO-07 enrolled 2 new residents</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">2 days ago</div><div class="activity-text">Life-skills curriculum updated across all facilities</div></div></div>
-        <div class="activity-item"><div class="activity-dot gold" style="background:var(--gold-dim)"></div><div><div class="activity-time">3 days ago</div><div class="activity-text">GRO-11 construction milestone reached (Petra)</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim)"></div><div><div class="activity-time">3 days ago</div><div class="activity-text">GRO-11 construction milestone reached (Petra)</div></div></div>
       </div>
     </div>
   </div>
@@ -1494,9 +1640,7 @@ function submitIntake() {
   closeModal(); showToast('Resident intake complete');
 }
 
-// ────────────────────────────
-// ALLIANCE
-// ────────────────────────────
+// ─── ALLIANCE ───
 let partners = [
   {name:'Marcus Vale',company:'Halcyon Capital',tier:'Gold',status:'Active',date:'Jan 2023'},
   {name:'Selene Brandt',company:'Brightline Ventures',tier:'Gold',status:'Active',date:'Mar 2023'},
@@ -1506,7 +1650,6 @@ let partners = [
   {name:'Priya Lattice',company:'Lattice Group',tier:'Bronze',status:'Pending',date:'May 2025'},
   {name:'Roman Ashford',company:'Summit Advisors',tier:'Gold',status:'Active',date:'Sep 2022'},
 ];
-let proposals = [];
 
 function buildAlliance() {
   return `<div class="page" id="page-alliance">
@@ -1620,9 +1763,7 @@ function addProposal() {
   closeModal(); showToast('Proposal submitted');
 }
 
-// ────────────────────────────
-// OBSCURA
-// ────────────────────────────
+// ─── OBSCURA ───
 let obscuraProjects = [
   {client:'Noir Atelier',type:'Web Dev',status:'Active',deliverable:'Flagship Site'},
   {client:'Cypress Forge',type:'4K Branding',status:'Development',deliverable:'Brand System'},
@@ -1689,9 +1830,7 @@ function addProject() {
   closeModal(); showToast('Project added for ' + client);
 }
 
-// ────────────────────────────
-// CAPITAL
-// ────────────────────────────
+// ─── CAPITAL ───
 let capitalAllocs = [
   {div:'Vindex',amt:'$1.2M',purpose:'Property acquisition',status:'Active'},
   {div:'Vindex',amt:'$480K',purpose:'Vehicle scaling',status:'Active'},
@@ -1813,9 +1952,7 @@ function drawCapitalChart() {
   });
 }
 
-// ────────────────────────────
-// CUSTODIA
-// ────────────────────────────
+// ─── CUSTODIA ───
 function buildCustodia() {
   return `<div class="page" id="page-custodia">
   <div class="page-header">
@@ -1922,9 +2059,7 @@ function assignDriver() {
   closeModal(); showToast('Driver assigned');
 }
 
-// ────────────────────────────
-// OUTREACH
-// ────────────────────────────
+// ─── OUTREACH ───
 let donationsYTD = 182000;
 let scholarshipsAwarded = 47;
 
@@ -1957,9 +2092,7 @@ function buildOutreach() {
         </tbody>
       </table>
       <div style="margin-top:24px;">
-        <div class="section-header">
-          <div style="font-size:14px;font-family:'Cormorant Garamond',serif;">Scholarship Log</div>
-        </div>
+        <div class="section-header"><div style="font-size:14px;font-family:'Cormorant Garamond',serif;">Scholarship Log</div></div>
         <table class="data-table" id="scholarship-table">
           <thead><tr><th>Recipient</th><th>Facility</th><th>Amount</th><th>Program</th></tr></thead>
           <tbody id="scholarship-tbody"><tr><td colspan="4" style="color:var(--text-muted);text-align:center;padding:16px 0;">Log entries will appear here.</td></tr></tbody>
@@ -1975,7 +2108,7 @@ function buildOutreach() {
         <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-time">This Week</div><div class="activity-text">$24K in tax-deductible donations received</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">Last Week</div><div class="activity-text">12 scholarships awarded to GRO residents</div></div></div>
         <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-time">This Month</div><div class="activity-text">Restoration Projects grant application submitted</div></div></div>
-        <div class="activity-item"><div class="activity-dot gold" style="background:var(--gold-dim)"></div><div><div class="activity-time">Q2</div><div class="activity-text">Youth Empowerment cohort 4 enrolled</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim)"></div><div><div class="activity-time">Q2</div><div class="activity-text">Youth Empowerment cohort 4 enrolled</div></div></div>
       </div>
     </div>
   </div>
@@ -2045,9 +2178,7 @@ function addScholarship() {
   closeModal(); showToast('Scholarship awarded to ' + name);
 }
 
-// ────────────────────────────
-// ALATUS
-// ────────────────────────────
+// ─── ALATUS ───
 let flights = [
   {origin:'Houston',dest:'Dallas',aircraft:'Citation CJ4',date:'May 12',status:'Completed'},
   {origin:'Cypress',dest:'Austin',aircraft:'King Air 350',date:'May 18',status:'Completed'},
@@ -2119,12 +2250,6 @@ function openScheduleFlight() {
       <select class="form-select" id="fl-aircraft"><option>Citation CJ4</option><option>King Air 350</option><option>Charter TBD</option></select></div>
       <div class="form-group"><label class="form-label">Date</label>
       <input class="form-input" id="fl-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Purpose</label>
-      <select class="form-select" id="fl-purpose"><option>Executive</option><option>Cargo</option><option>Recon</option></select></div>
-      <div class="form-group"><label class="form-label">Passengers</label>
-      <input class="form-input" id="fl-pax" placeholder="0" type="number"></div>
     </div>`,
     `<button class="btn btn-outline" onclick="closeModal()">Cancel</button>
      <button class="btn btn-gold" onclick="addFlight()">Add to Flight Log</button>`
@@ -2177,9 +2302,7 @@ function deployDrone() {
   closeModal(); showToast(unit + ' deployed to ' + prop);
 }
 
-// ────────────────────────────
-// PEDES
-// ────────────────────────────
+// ─── PEDES ───
 let pedesRuns = [
   {veh:'B1 — Escalade',driver:'M. Reyes',route:'Executive — Houston Loop',status:'Active'},
   {veh:'B3 — Sprinter',driver:'D. Cole',route:'Heavy — Katy → Spring',status:'Active'},
@@ -2260,9 +2383,7 @@ function addRun() {
   closeModal(); showToast('Run added — ' + veh);
 }
 
-// ────────────────────────────
-// PETRA
-// ────────────────────────────
+// ─── PETRA ───
 let builds = [
   {name:'GRO-11 Sterling',type:'GRO Facility',div:'Operations',start:'Jan 2025',pct:62,status:'Active'},
   {name:'Cypress Commercial Hub',type:'Commercial',div:'Vindex',start:'Mar 2025',pct:40,status:'Active'},
@@ -2276,7 +2397,7 @@ function buildPetra() {
   <div class="page-header">
     <div class="page-title"><span class="page-title-main">Petra</span><span class="page-title-tag">The Bedrock</span></div>
     <div class="page-dba">Legion V. Omni-Operation – Petra | LVOPR / LVO-OPR</div>
-    <div class="page-desc">Physical construction and infrastructure. Builds GRO facilities for Operations and commercial hubs for Vindex. Vertical integration keeps all construction profits inside the organization.</div>
+    <div class="page-desc">Physical construction and infrastructure. Builds GRO facilities for Operations and commercial hubs for Vindex.</div>
   </div>
   ${requestBar('petra',['New Build Request','Renovation Request','Inspection Request','Material Order','Project Update'])}
   <div class="kpi-grid">
@@ -2337,7 +2458,6 @@ function addBuild() {
   const name = document.getElementById('nb-name').value.trim();
   const type = document.getElementById('nb-type').value;
   const div = document.getElementById('nb-div').value;
-  const budget = document.getElementById('nb-budget').value || 'TBD';
   if (!name) return;
   const tbody = document.querySelector('#petra-table tbody');
   const i = tbody.children.length;
@@ -2352,30 +2472,6 @@ function addBuild() {
   closeModal(); showToast(name + ' added to Active Builds');
 }
 
-// ─── TABS ───
-function switchTab(el, targetId, groupId) {
-  const group = document.getElementById(groupId);
-  group.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  el.closest('.page, .section').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(targetId).classList.add('active');
-}
-
-// ─── POST-RENDER HOOKS ───
-function postRenderHooks() {
-  setTimeout(drawCapitalChart, 100);
-}
-
-// ─── OVERRIDE navigate TO DRAW CHART ───
-const _navigate = navigate;
-window.navigate = function(id) {
-  _navigate(id);
-  if (id === 'capital') setTimeout(drawCapitalChart, 150);
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('auth-input').focus();
-});
 </script>
 </body>
 </html>
