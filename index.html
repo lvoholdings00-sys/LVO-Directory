@@ -92,17 +92,19 @@ body::after {
 .h-line--top { top: 80px; }
 .h-line--bottom { bottom: 80px; }
 
-/* ─── SITE COORDINATES LABEL ─── */
+/* ─── SITE COORDINATES LABEL — CENTERED ─── */
 .site-label {
   position: fixed;
   bottom: 36px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: 9px;
   letter-spacing: 0.3em;
   color: var(--text-muted);
   text-transform: uppercase;
   z-index: 10;
+  white-space: nowrap;
   opacity: 0;
   animation: fadeUp 1s ease 2.8s forwards;
 }
@@ -205,6 +207,55 @@ body::after {
   align-self: flex-start;
 }
 
+/* ─── TOTP HINT ─── */
+.totp-hint {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+  align-self: center;
+}
+
+/* ─── TIMER RING ─── */
+.timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end;
+  opacity: 0.6;
+}
+
+.timer-ring {
+  width: 18px;
+  height: 18px;
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.timer-ring-fill {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 44;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.5s;
+}
+
+.timer-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  min-width: 30px;
+}
+
+/* ─── INPUT ─── */
 .input-wrap {
   position: relative;
   width: 100%;
@@ -217,8 +268,8 @@ body::after {
   border-bottom: 1px solid var(--border);
   color: var(--text);
   font-family: 'DM Mono', monospace;
-  font-size: 14px;
-  letter-spacing: 0.18em;
+  font-size: 20px;
+  letter-spacing: 0.3em;
   padding: 10px 44px 10px 4px;
   outline: none;
   transition: border-color 0.3s;
@@ -286,6 +337,7 @@ body::after {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.auth-btn:disabled::before { display: none; }
 
 /* ─── ERROR MESSAGE ─── */
 .err-msg {
@@ -328,7 +380,6 @@ body::after {
   letter-spacing: 0.3em;
   color: var(--gold);
   opacity: 0;
-  animation: none;
 }
 
 #success-overlay.show .success-text {
@@ -412,6 +463,8 @@ body::after {
 <div class="corner corner--br"></div>
 <div class="h-line h-line--top"></div>
 <div class="h-line h-line--bottom"></div>
+
+<!-- CENTERED bottom label -->
 <div class="site-label">lvo-cloud.cloud &nbsp;·&nbsp; private access</div>
 
 <!-- Main stage -->
@@ -459,16 +512,27 @@ body::after {
 
   <!-- Auth form -->
   <div class="auth-form" id="auth-form">
-    <label class="auth-form-label" for="pw-input">Access Code</label>
+    <label class="auth-form-label" for="pw-input">Authenticator Code</label>
+
+    <!-- Countdown timer -->
+    <div class="timer-wrap" id="timer-wrap">
+      <svg class="timer-ring" viewBox="0 0 18 18">
+        <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
+        <circle class="timer-ring-fill" id="timer-ring-fill" cx="9" cy="9" r="7"/>
+      </svg>
+      <span class="timer-label" id="timer-label">--s</span>
+    </div>
+
     <div class="input-wrap">
       <input
         class="pw-input"
         id="pw-input"
         type="password"
-        placeholder="· · · · · · · ·"
-        autocomplete="off"
+        placeholder="· · · · · ·"
+        autocomplete="one-time-code"
+        inputmode="numeric"
         spellcheck="false"
-        maxlength="64"
+        maxlength="6"
       >
       <button class="eye-btn" id="eye-btn" type="button" title="Toggle visibility" onclick="toggleEye()">
         <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -477,9 +541,12 @@ body::after {
         </svg>
       </button>
     </div>
+
+    <p class="totp-hint">Open Microsoft Authenticator and enter<br>the 6-digit code for LVO Holdings LLC</p>
+
     <div class="err-msg" id="err-msg">Invalid access code</div>
     <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
-      <span>Enter</span>
+      <span id="btn-label">Enter</span>
     </button>
   </div>
 
@@ -498,42 +565,24 @@ body::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 
 <script>
-// ─── PARTICLES INIT ───
+// ─── CONFIG ───────────────────────────────────────────────
+// Your Vercel deployment URL (no trailing slash)
+const API_BASE = '';  // Leave empty to use same origin (works automatically on Vercel)
+const DASHBOARD_URL = 'http://dash.lvo-cloud.cloud/';
+
+// ─── PARTICLES ────────────────────────────────────────────
 particlesJS("particles-js", {
   "particles": {
     "number": { "value": 55, "density": { "enable": true, "value_area": 900 } },
     "color": { "value": "#b8953f" },
-    "shape": {
-      "type": "circle",
-      "stroke": { "width": 0, "color": "#000000" }
-    },
+    "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
     "opacity": {
-      "value": 0.22,
-      "random": true,
+      "value": 0.22, "random": true,
       "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.05, "sync": false }
     },
-    "size": {
-      "value": 2,
-      "random": true,
-      "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 160,
-      "color": "#b8953f",
-      "opacity": 0.09,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 1.2,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-    }
+    "size": { "value": 2, "random": true, "anim": { "enable": false } },
+    "line_linked": { "enable": true, "distance": 160, "color": "#b8953f", "opacity": 0.09, "width": 1 },
+    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
   },
   "interactivity": {
     "detect_on": "canvas",
@@ -544,84 +593,122 @@ particlesJS("particles-js", {
     },
     "modes": {
       "grab": { "distance": 180, "line_linked": { "opacity": 0.3 } },
-      "repulse": { "distance": 200, "duration": 0.4 },
-      "push": { "particles_nb": 2 },
-      "remove": { "particles_nb": 2 }
+      "push": { "particles_nb": 2 }
     }
   },
   "retina_detect": true
 });
 
-// ─── PASSWORD GATE ───
-// ⚠ Set your password here
-const CORRECT_PASSWORD = "lvo2025";
+// ─── TOTP COUNTDOWN TIMER ────────────────────────────────
+const CIRCUMFERENCE = 2 * Math.PI * 7; // r=7
 
-// Destination after successful login
-const DASHBOARD_URL = "http://dash.lvo-cloud.cloud/";
+function updateTimer() {
+  const now = Math.floor(Date.now() / 1000);
+  const secondsInPeriod = now % 30;
+  const remaining = 30 - secondsInPeriod;
+  const fraction = remaining / 30;
 
-let attempts = 0;
-let locked = false;
+  const fill = document.getElementById('timer-ring-fill');
+  const label = document.getElementById('timer-label');
 
-const pwInput = document.getElementById('pw-input');
-const errMsg  = document.getElementById('err-msg');
-const authBtn = document.getElementById('auth-btn');
+  fill.style.strokeDashoffset = CIRCUMFERENCE * (1 - fraction);
+  label.textContent = remaining + 's';
 
-// Allow Enter key
-pwInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') attemptLogin();
-});
-
-// Clear error on type
-pwInput.addEventListener('input', () => {
-  pwInput.classList.remove('error');
-  errMsg.classList.remove('show');
-});
-
-function attemptLogin() {
-  if (locked) return;
-
-  const val = pwInput.value;
-
-  if (val === CORRECT_PASSWORD) {
-    authBtn.disabled = true;
-    pwInput.disabled = true;
-    showSuccess();
+  // Warn when code is about to expire
+  if (remaining <= 5) {
+    fill.style.stroke = 'var(--red)';
+    label.style.color = 'var(--red)';
   } else {
-    attempts++;
-    pwInput.classList.add('error');
-    errMsg.classList.add('show');
-
-    if (attempts >= 5) {
-      locked = true;
-      errMsg.textContent = 'Too many attempts. Please try again later.';
-      authBtn.disabled = true;
-      pwInput.disabled = true;
-      // Unlock after 60 seconds
-      setTimeout(() => {
-        locked = false;
-        attempts = 0;
-        authBtn.disabled = false;
-        pwInput.disabled = false;
-        errMsg.textContent = 'Invalid access code';
-        errMsg.classList.remove('show');
-      }, 60000);
-    } else {
-      errMsg.textContent = 'Invalid access code';
-    }
-
-    // Shake & clear
-    setTimeout(() => {
-      pwInput.classList.remove('error');
-      pwInput.value = '';
-    }, 600);
+    fill.style.stroke = 'var(--gold)';
+    label.style.color = 'var(--text-muted)';
   }
 }
 
-function showSuccess() {
-  const overlay = document.getElementById('success-overlay');
-  overlay.classList.add('show');
+updateTimer();
+setInterval(updateTimer, 1000);
 
-  // Redirect after bar animation finishes
+// ─── AUTH LOGIC ───────────────────────────────────────────
+const pwInput  = document.getElementById('pw-input');
+const errMsg   = document.getElementById('err-msg');
+const authBtn  = document.getElementById('auth-btn');
+const btnLabel = document.getElementById('btn-label');
+
+// Enter key support
+pwInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') attemptLogin();
+});
+
+// Auto-submit when 6 digits entered
+pwInput.addEventListener('input', () => {
+  pwInput.classList.remove('error');
+  errMsg.classList.remove('show');
+
+  // Strip non-digits
+  pwInput.value = pwInput.value.replace(/\D/g, '').slice(0, 6);
+
+  if (pwInput.value.length === 6) {
+    setTimeout(attemptLogin, 120); // brief pause so user sees full code
+  }
+});
+
+async function attemptLogin() {
+  const code = pwInput.value.trim();
+  if (!code || code.length !== 6) {
+    showError('Enter the 6-digit code from your authenticator');
+    return;
+  }
+
+  // Loading state
+  authBtn.disabled = true;
+  btnLabel.textContent = 'Verifying...';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.token) {
+      // Store JWT for use on dashboard
+      sessionStorage.setItem('lvo_token', data.token);
+      showSuccess();
+    } else if (res.status === 429) {
+      showError(data.error || 'Too many attempts. Wait and try again.');
+      authBtn.disabled = true;
+      btnLabel.textContent = 'Locked';
+    } else {
+      const left = data.attemptsLeft !== undefined ? ` (${data.attemptsLeft} left)` : '';
+      showError((data.error || 'Invalid access code') + left);
+      resetInput();
+      authBtn.disabled = false;
+      btnLabel.textContent = 'Enter';
+    }
+  } catch (err) {
+    showError('Connection error. Please try again.');
+    authBtn.disabled = false;
+    btnLabel.textContent = 'Enter';
+  }
+}
+
+function showError(msg) {
+  errMsg.textContent = msg;
+  errMsg.classList.add('show');
+  pwInput.classList.add('error');
+  setTimeout(() => pwInput.classList.remove('error'), 600);
+}
+
+function resetInput() {
+  setTimeout(() => {
+    pwInput.value = '';
+    errMsg.classList.remove('show');
+  }, 800);
+}
+
+function showSuccess() {
+  document.getElementById('success-overlay').classList.add('show');
   setTimeout(() => {
     window.location.href = DASHBOARD_URL;
   }, 3000);
