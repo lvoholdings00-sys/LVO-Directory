@@ -213,6 +213,8 @@ body::after {
 <canvas id="shader-bg"></canvas>
 <div id="particles-js"></div>
 
+<audio id="ambient" src="https://raw.githubusercontent.com/lvoholdings00-sys/LVO-Directory/main/assets/Project18r.mp3" loop preload="auto"></audio>
+
 <div class="corner corner--tl"></div>
 <div class="corner corner--tr"></div>
 <div class="corner corner--bl"></div>
@@ -298,6 +300,14 @@ body::after {
 const API_BASE = 'https://lvo-setup.vercel.app';
 const DASHBOARD_URL = 'http://online.lvo-cloud.cloud/';
 
+/* ── Ambient audio ── */
+const ambient = document.getElementById('ambient');
+ambient.volume = 0.45;
+document.addEventListener('click', function startAudio() {
+  ambient.play().catch(() => {});
+  document.removeEventListener('click', startAudio);
+}, { once: true });
+
 particlesJS("particles-js", {
   particles: {
     number: { value: 55, density: { enable: true, value_area: 900 } },
@@ -368,6 +378,7 @@ async function attemptLogin() {
       const left = data.attemptsLeft !== undefined ? ` (${data.attemptsLeft} left)` : '';
       showError((data.error || 'Invalid access code') + left);
       resetInput();
+      setTimeout(() => { window.location.href = 'https://wearelvo.com'; }, 800);
       authBtn.disabled = false;
       btnLabel.textContent = 'Enter';
     }
