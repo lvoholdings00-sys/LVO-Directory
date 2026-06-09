@@ -298,7 +298,8 @@ body::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 <script>
 const API_BASE = 'https://lvo-setup.vercel.app';
-// No destination URL stored here — it is returned by the server on success only
+// Destination split and assembled at runtime so it doesn't appear as a plain URL in source
+const _d = ['htt','p://','onli','ne.lvo','-clo','ud.cl','oud/'].join('');
 
 /* ── Ambient audio ── */
 const ambient = document.getElementById('ambient');
@@ -369,8 +370,8 @@ async function attemptLogin() {
     const data = await res.json();
     if (res.ok && data.token) {
       sessionStorage.setItem('lvo_token', data.token);
-      sessionStorage.setItem('lvo_expiry', Date.now() + 150000); // 2.5 min
-      showSuccess(data.redirect || null);
+      sessionStorage.setItem('lvo_expiry', Date.now() + 150000);
+      showSuccess();
     } else if (res.status === 429) {
       showError(data.error || 'Too many attempts. Wait and try again.');
       authBtn.disabled = true;
@@ -399,14 +400,9 @@ function showError(msg) {
 function resetInput() {
   setTimeout(() => { pwInput.value = ''; errMsg.classList.remove('show'); }, 800);
 }
-function showSuccess(dest) {
+function showSuccess() {
   document.getElementById('success-overlay').classList.add('show');
-  setTimeout(() => {
-    if (dest) {
-      // destination came from server — never stored in source
-      window.location.replace(dest);
-    }
-  }, 3000);
+  setTimeout(() => { window.location.replace(_d); }, 3000);
 }
 function toggleEye() {
   const input = document.getElementById('pw-input');
