@@ -259,7 +259,7 @@ body::after {
     </div>
 
     <div class="auth-form" id="auth-form">
-      <label class="auth-form-label" for="pw-input">Authenticator Code</label>
+      <label class="auth-form-label" for="pw-input">Code</label>
       <div class="timer-wrap" id="timer-wrap">
         <svg class="timer-ring" viewBox="0 0 18 18">
           <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
@@ -278,7 +278,7 @@ body::after {
           </svg>
         </button>
       </div>
-      <p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
+      <p class="totp-hint">Enter the 6-digit code to continue.</p>
       <div class="err-msg" id="err-msg">Invalid access code</div>
       <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
         <span id="btn-label">Enter</span>
@@ -302,7 +302,7 @@ const DASHBOARD_URL = 'http://online.lvo-cloud.cloud/';
 
 /* ── Ambient audio ── */
 const ambient = document.getElementById('ambient');
-ambient.volume = 0.45;
+ambient.volume = 0.35;
 document.addEventListener('click', function startAudio() {
   ambient.play().catch(() => {});
   document.removeEventListener('click', startAudio);
