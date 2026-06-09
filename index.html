@@ -259,7 +259,7 @@ body::after {
     </div>
 
     <div class="auth-form" id="auth-form">
-      <label class="auth-form-label" for="pw-input">Code</label>
+      <label class="auth-form-label" for="pw-input">Authenticator Code</label>
       <div class="timer-wrap" id="timer-wrap">
         <svg class="timer-ring" viewBox="0 0 18 18">
           <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
@@ -278,7 +278,7 @@ body::after {
           </svg>
         </button>
       </div>
-      <p class="totp-hint">Enter the 6-digit code to continue.</p>
+      <p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
       <div class="err-msg" id="err-msg">Invalid access code</div>
       <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
         <span id="btn-label">Enter</span>
@@ -298,11 +298,11 @@ body::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 <script>
 const API_BASE = 'https://lvo-setup.vercel.app';
-const DASHBOARD_URL = 'http://online.lvo-cloud.cloud/';
+// No destination URL stored here — it is returned by the server on success only
 
 /* ── Ambient audio ── */
 const ambient = document.getElementById('ambient');
-ambient.volume = 0.35;
+ambient.volume = 0.45;
 document.addEventListener('click', function startAudio() {
   ambient.play().catch(() => {});
   document.removeEventListener('click', startAudio);
@@ -369,7 +369,8 @@ async function attemptLogin() {
     const data = await res.json();
     if (res.ok && data.token) {
       sessionStorage.setItem('lvo_token', data.token);
-      showSuccess();
+      sessionStorage.setItem('lvo_expiry', Date.now() + 150000); // 2.5 min
+      showSuccess(data.redirect || null);
     } else if (res.status === 429) {
       showError(data.error || 'Too many attempts. Wait and try again.');
       authBtn.disabled = true;
@@ -398,9 +399,14 @@ function showError(msg) {
 function resetInput() {
   setTimeout(() => { pwInput.value = ''; errMsg.classList.remove('show'); }, 800);
 }
-function showSuccess() {
+function showSuccess(dest) {
   document.getElementById('success-overlay').classList.add('show');
-  setTimeout(() => { window.location.href = DASHBOARD_URL; }, 3000);
+  setTimeout(() => {
+    if (dest) {
+      // destination came from server — never stored in source
+      window.location.replace(dest);
+    }
+  }, 3000);
 }
 function toggleEye() {
   const input = document.getElementById('pw-input');
