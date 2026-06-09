@@ -5,18 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LVO Holdings LLC</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
-/* ─── ROOT ─── */
 :root {
   --black: #0a0a0a;
-  --surface: #111111;
-  --border: #2a2a2a;
-  --border-gold: #b8953f44;
   --gold: #b8953f;
   --gold-light: #d4a853;
   --gold-dim: #7a5f1a;
-  --gold-glow: #b8953f14;
+  --gold-border: #b8953f44;
   --text: #e8e6e0;
   --text-dim: #9a9690;
   --text-muted: #5a5650;
@@ -31,9 +26,9 @@ html, body {
   color: var(--text);
   font-family: 'DM Mono', monospace;
   overflow: hidden;
+  cursor: crosshair;
 }
 
-/* ─── NOISE GRAIN OVERLAY ─── */
 body::after {
   content: '';
   position: fixed;
@@ -45,31 +40,15 @@ body::after {
   mix-blend-mode: overlay;
 }
 
-/* ─── PARTICLES CANVAS ─── */
 #particles-js {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-/* ─── RADIAL GLOW CENTER ─── */
-.center-glow {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #b8953f0d 0%, #b8953f05 40%, transparent 70%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ─── CORNER LINES ─── */
 .corner {
   position: fixed;
-  width: 60px;
-  height: 60px;
+  width: 60px; height: 60px;
   pointer-events: none;
   z-index: 2;
   opacity: 0.3;
@@ -79,60 +58,69 @@ body::after {
 .corner--bl { bottom: 32px; left: 32px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
 .corner--br { bottom: 32px; right: 32px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
 
-/* ─── HORIZONTAL RULE LINES ─── */
-.h-line {
-  position: fixed;
-  left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.5;
-}
-.h-line--top { top: 80px; }
-.h-line--bottom { bottom: 80px; }
-
-/* ─── SITE COORDINATES LABEL — CENTERED ─── */
 .site-label {
   position: fixed;
   bottom: 36px;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   text-align: center;
   font-size: 9px;
   letter-spacing: 0.3em;
   color: var(--text-muted);
   text-transform: uppercase;
   z-index: 10;
-  white-space: nowrap;
   opacity: 0;
   animation: fadeUp 1s ease 2.8s forwards;
 }
 
-/* ─── MAIN STAGE ─── */
 #stage {
   position: fixed;
   inset: 0;
   z-index: 5;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
 }
 
-/* ─── MOTH SVG ─── */
-.moth-wrap {
+.panel {
+  width: 320px;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 40px 32px 28px;
+  position: relative;
   opacity: 0;
-  transform: translateY(-16px);
-  animation: descend 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
-  margin-bottom: 32px;
+  animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: -3px;
+  width: 22px; height: 22px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  border-left: 1px solid rgba(255,255,255,0.3);
+}
+.panel::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; right: -3px;
+  width: 22px; height: 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+
+.moth-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeIn 1s 0.9s forwards;
 }
 
 .auth-moth {
-  width: 100px;
-  height: 100px;
-  filter: drop-shadow(0 0 18px #b8953f28);
+  width: 72px; height: 72px;
+  filter: drop-shadow(0 0 14px #b8953f28);
   animation: mothFloat 5s ease-in-out infinite;
 }
 
@@ -148,20 +136,19 @@ body::after {
 }
 @keyframes mothFloat {
   0%, 100% { transform: translateY(0); }
-  50%  { transform: translateY(-7px); }
+  50% { transform: translateY(-6px); }
 }
 
-/* ─── WORDMARK ─── */
 .wordmark {
-  opacity: 0;
-  animation: fadeUp 1s ease 0.9s forwards;
   text-align: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  opacity: 0;
+  animation: fadeIn 0.8s 1s forwards;
 }
 
 .wordmark-main {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 72px;
+  font-size: 52px;
   font-weight: 300;
   letter-spacing: 0.55em;
   color: var(--gold);
@@ -170,54 +157,49 @@ body::after {
 }
 
 .wordmark-sub {
-  font-size: 9px;
+  font-size: 8px;
   letter-spacing: 0.42em;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-top: 6px;
+  margin-top: 4px;
   text-indent: 0.42em;
 }
 
-/* ─── RULE DIVIDER ─── */
 .rule {
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-  margin: 28px 0 28px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0;
   opacity: 0;
-  animation: fadeIn 1s ease 1.4s forwards;
+  animation: fadeIn 0.8s 1.15s forwards;
+}
+.rule-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(184,149,63,0.2));
+}
+.rule-line.r { background: linear-gradient(to left, transparent, rgba(184,149,63,0.2)); }
+.rule-diamond {
+  width: 4px; height: 4px;
+  background: rgba(184,149,63,0.3);
+  transform: rotate(45deg);
 }
 
-/* ─── PASSWORD FORM ─── */
 .auth-form {
-  opacity: 0;
-  animation: fadeUp 1s ease 1.6s forwards;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  width: 320px;
+  gap: 12px;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.3s forwards;
 }
 
 .auth-form-label {
-  font-size: 9px;
+  font-size: 8px;
   letter-spacing: 0.35em;
   color: var(--text-muted);
   text-transform: uppercase;
-  align-self: flex-start;
 }
 
-/* ─── TOTP HINT ─── */
-.totp-hint {
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
-  text-align: center;
-  line-height: 1.6;
-  align-self: center;
-}
-
-/* ─── TIMER RING ─── */
 .timer-wrap {
   display: flex;
   align-items: center;
@@ -225,47 +207,22 @@ body::after {
   align-self: flex-end;
   opacity: 0.6;
 }
-
-.timer-ring {
-  width: 18px;
-  height: 18px;
-  transform: rotate(-90deg);
-}
-
-.timer-ring-bg {
-  fill: none;
-  stroke: var(--border);
-  stroke-width: 2;
-}
-
+.timer-ring { width: 18px; height: 18px; transform: rotate(-90deg); }
+.timer-ring-bg { fill: none; stroke: #2a2a2a; stroke-width: 2; }
 .timer-ring-fill {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-dasharray: 44;
-  stroke-dashoffset: 0;
+  fill: none; stroke: var(--gold); stroke-width: 2;
+  stroke-linecap: round; stroke-dasharray: 44; stroke-dashoffset: 0;
   transition: stroke-dashoffset 1s linear, stroke 0.5s;
 }
+.timer-label { font-size: 9px; letter-spacing: 0.2em; color: var(--text-muted); min-width: 30px; }
 
-.timer-label {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  min-width: 30px;
-}
-
-/* ─── INPUT ─── */
-.input-wrap {
-  position: relative;
-  width: 100%;
-}
+.input-wrap { position: relative; width: 100%; }
 
 .pw-input {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   color: var(--text);
   font-family: 'DM Mono', monospace;
   font-size: 20px;
@@ -276,35 +233,38 @@ body::after {
   text-align: center;
   caret-color: var(--gold);
 }
-
-.pw-input::placeholder {
-  color: var(--text-muted);
-  letter-spacing: 0.2em;
-  font-size: 12px;
-}
-
+.pw-input::placeholder { color: var(--text-muted); letter-spacing: 0.2em; font-size: 12px; }
 .pw-input:focus { border-bottom-color: var(--gold); }
 .pw-input.error { border-bottom-color: var(--red); animation: shake 0.4s ease; }
 
 .eye-btn {
   position: absolute;
-  right: 8px;
-  top: 50%;
+  right: 8px; top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
+  background: none; border: none;
   color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.2s;
-  line-height: 0;
+  cursor: pointer; padding: 4px;
+  transition: color 0.2s; line-height: 0;
 }
 .eye-btn:hover { color: var(--gold); }
+
+.totp-hint {
+  font-size: 9px; letter-spacing: 0.15em;
+  color: var(--text-muted); text-align: center; line-height: 1.6;
+}
+
+.err-msg {
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--red); text-transform: uppercase;
+  min-height: 14px; text-align: center;
+  opacity: 0; transition: opacity 0.3s;
+}
+.err-msg.show { opacity: 1; }
 
 .auth-btn {
   width: 100%;
   background: transparent;
-  border: 1px solid var(--border-gold);
+  border: 1px solid var(--gold-border);
   color: var(--gold);
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -313,366 +273,232 @@ body::after {
   padding: 13px 24px;
   cursor: pointer;
   transition: background 0.25s, border-color 0.25s, color 0.25s, box-shadow 0.25s;
-  margin-top: 4px;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .auth-btn::before {
   content: '';
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
   z-index: 0;
 }
-
 .auth-btn:hover::before { transform: scaleX(1); }
 .auth-btn:hover { color: var(--black); box-shadow: 0 0 24px #b8953f22; }
 .auth-btn span { position: relative; z-index: 1; }
-
-.auth-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .auth-btn:disabled::before { display: none; }
 
-/* ─── ERROR MESSAGE ─── */
-.err-msg {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--red);
-  text-transform: uppercase;
-  min-height: 16px;
+.panel-footer {
+  margin-top: 20px;
+  font-size: 8px;
+  color: rgba(255,255,255,0.1);
+  letter-spacing: 0.18em;
   text-align: center;
   opacity: 0;
-  transition: opacity 0.3s;
+  animation: fadeIn 0.6s 1.8s forwards;
 }
-.err-msg.show { opacity: 1; }
 
-/* ─── SUCCESS OVERLAY ─── */
 #success-overlay {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: var(--black);
   z-index: 9000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
-  gap: 16px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease; gap: 16px;
 }
-
-#success-overlay.show {
-  opacity: 1;
-  pointer-events: all;
-}
-
+#success-overlay.show { opacity: 1; pointer-events: all; }
 .success-text {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  font-weight: 300;
-  letter-spacing: 0.3em;
-  color: var(--gold);
-  opacity: 0;
+  font-size: 20px; font-weight: 300;
+  letter-spacing: 0.3em; color: var(--gold); opacity: 0;
 }
+#success-overlay.show .success-text { animation: fadeUp 0.8s ease 0.3s forwards; }
+.success-sub { font-size: 9px; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; opacity: 0; }
+#success-overlay.show .success-sub { animation: fadeUp 0.8s ease 0.6s forwards; }
+.success-bar { width: 220px; height: 1px; background: #2a2a2a; margin-top: 8px; opacity: 0; position: relative; overflow: hidden; }
+#success-overlay.show .success-bar { opacity: 1; animation: fadeIn 0.4s ease 0.9s forwards; }
+.success-bar-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+#success-overlay.show .success-bar-fill { animation: fillBar 1.6s cubic-bezier(0.22,1,0.36,1) 1s forwards; }
 
-#success-overlay.show .success-text {
-  animation: fadeUp 0.8s ease 0.3s forwards;
-}
-
-.success-sub {
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  opacity: 0;
-}
-#success-overlay.show .success-sub {
-  animation: fadeUp 0.8s ease 0.6s forwards;
-}
-
-.success-bar {
-  width: 220px;
-  height: 1px;
-  background: var(--border);
-  margin-top: 8px;
-  opacity: 0;
-  position: relative;
-  overflow: hidden;
-}
-#success-overlay.show .success-bar {
-  opacity: 1;
-  animation: fadeIn 0.4s ease 0.9s forwards;
-}
-.success-bar-fill {
-  position: absolute;
-  top: 0; left: 0;
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-}
-#success-overlay.show .success-bar-fill {
-  animation: fillBar 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1s forwards;
-}
-
-/* ─── KEYFRAMES ─── */
-@keyframes descend {
-  from { opacity: 0; transform: translateY(-24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { to { opacity: 1; } }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%  { transform: translateX(-6px); }
-  40%  { transform: translateX(6px); }
-  60%  { transform: translateX(-4px); }
-  80%  { transform: translateX(4px); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
-@keyframes fillBar {
-  from { width: 0; }
-  to   { width: 100%; }
-}
+@keyframes fillBar { from { width: 0; } to { width: 100%; } }
 
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 0; }
+@media (max-width: 420px) { .panel { width: 88vw; padding: 32px 22px 24px; } }
 </style>
 </head>
 <body>
 
-<!-- Particles -->
+<canvas id="shader-bg" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;"></canvas>
 <div id="particles-js"></div>
 
-<!-- Atmosphere -->
-<div class="center-glow"></div>
 <div class="corner corner--tl"></div>
 <div class="corner corner--tr"></div>
 <div class="corner corner--bl"></div>
 <div class="corner corner--br"></div>
-<div class="h-line h-line--top"></div>
-<div class="h-line h-line--bottom"></div>
 
-<!-- CENTERED bottom label -->
 <div class="site-label">lvo-cloud.cloud &nbsp;·&nbsp; private access</div>
 
-<!-- Main stage -->
 <div id="stage">
+  <div class="panel">
 
-  <!-- Moth -->
-  <div class="moth-wrap">
-    <svg class="auth-moth" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="60" cy="62" rx="5" ry="18" fill="#7a5f1a"/>
-      <ellipse cx="60" cy="62" rx="3.5" ry="16" fill="#b8953f"/>
-      <circle cx="60" cy="42" r="6" fill="#b8953f"/>
-      <line x1="60" y1="38" x2="44" y2="24" stroke="#b8953f" stroke-width="1.2"/>
-      <circle cx="43" cy="23" r="2" fill="#d4a853"/>
-      <line x1="60" y1="38" x2="76" y2="24" stroke="#b8953f" stroke-width="1.2"/>
-      <circle cx="77" cy="23" r="2" fill="#d4a853"/>
-      <g class="moth-wing-left">
-        <path d="M57 55 Q30 35 18 50 Q14 70 30 75 Q45 78 57 68 Z" fill="#b8953f" opacity="0.85"/>
-        <path d="M57 65 Q35 68 25 82 Q28 95 42 90 Q54 85 57 72 Z" fill="#9a7a30" opacity="0.8"/>
-        <path d="M57 57 Q40 45 22 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
-        <path d="M57 62 Q42 58 28 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
-        <path d="M57 66 Q45 72 32 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
-      </g>
-      <g class="moth-wing-right">
-        <path d="M63 55 Q90 35 102 50 Q106 70 90 75 Q75 78 63 68 Z" fill="#b8953f" opacity="0.85"/>
-        <path d="M63 65 Q85 68 95 82 Q92 95 78 90 Q66 85 63 72 Z" fill="#9a7a30" opacity="0.8"/>
-        <path d="M63 57 Q80 45 98 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
-        <path d="M63 62 Q78 58 92 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
-        <path d="M63 66 Q75 72 88 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
-      </g>
-      <circle cx="35" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
-      <circle cx="35" cy="60" r="3" fill="#d4a853" opacity="0.4"/>
-      <circle cx="85" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
-      <circle cx="85" cy="60" r="3" fill="#d4a853" opacity="0.4"/>
-    </svg>
-  </div>
-
-  <!-- Wordmark -->
-  <div class="wordmark">
-    <div class="wordmark-main">LVO</div>
-    <div class="wordmark-sub">Holdings LLC</div>
-  </div>
-
-  <!-- Divider -->
-  <div class="rule"></div>
-
-  <!-- Auth form -->
-  <div class="auth-form" id="auth-form">
-    <label class="auth-form-label" for="pw-input">Authenticator Code</label>
-
-    <!-- Countdown timer -->
-    <div class="timer-wrap" id="timer-wrap">
-      <svg class="timer-ring" viewBox="0 0 18 18">
-        <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
-        <circle class="timer-ring-fill" id="timer-ring-fill" cx="9" cy="9" r="7"/>
+    <div class="moth-wrap">
+      <svg class="auth-moth" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="60" cy="62" rx="5" ry="18" fill="#7a5f1a"/>
+        <ellipse cx="60" cy="62" rx="3.5" ry="16" fill="#b8953f"/>
+        <circle cx="60" cy="42" r="6" fill="#b8953f"/>
+        <line x1="60" y1="38" x2="44" y2="24" stroke="#b8953f" stroke-width="1.2"/>
+        <circle cx="43" cy="23" r="2" fill="#d4a853"/>
+        <line x1="60" y1="38" x2="76" y2="24" stroke="#b8953f" stroke-width="1.2"/>
+        <circle cx="77" cy="23" r="2" fill="#d4a853"/>
+        <g class="moth-wing-left">
+          <path d="M57 55 Q30 35 18 50 Q14 70 30 75 Q45 78 57 68 Z" fill="#b8953f" opacity="0.85"/>
+          <path d="M57 65 Q35 68 25 82 Q28 95 42 90 Q54 85 57 72 Z" fill="#9a7a30" opacity="0.8"/>
+          <path d="M57 57 Q40 45 22 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
+          <path d="M57 62 Q42 58 28 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <path d="M57 66 Q45 72 32 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
+        </g>
+        <g class="moth-wing-right">
+          <path d="M63 55 Q90 35 102 50 Q106 70 90 75 Q75 78 63 68 Z" fill="#b8953f" opacity="0.85"/>
+          <path d="M63 65 Q85 68 95 82 Q92 95 78 90 Q66 85 63 72 Z" fill="#9a7a30" opacity="0.8"/>
+          <path d="M63 57 Q80 45 98 52" stroke="#d4a853" stroke-width="0.7" fill="none" opacity="0.6"/>
+          <path d="M63 62 Q78 58 92 65" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <path d="M63 66 Q75 72 88 80" stroke="#d4a853" stroke-width="0.5" fill="none" opacity="0.5"/>
+        </g>
+        <circle cx="35" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
+        <circle cx="35" cy="60" r="3" fill="#d4a853" opacity="0.4"/>
+        <circle cx="85" cy="60" r="5" fill="#0a0a0a" opacity="0.5"/>
+        <circle cx="85" cy="60" r="3" fill="#d4a853" opacity="0.4"/>
       </svg>
-      <span class="timer-label" id="timer-label">--s</span>
     </div>
 
-    <div class="input-wrap">
-      <input
-        class="pw-input"
-        id="pw-input"
-        type="password"
-        placeholder="· · · · · ·"
-        autocomplete="one-time-code"
-        inputmode="numeric"
-        spellcheck="false"
-        maxlength="6"
-      >
-      <button class="eye-btn" id="eye-btn" type="button" title="Toggle visibility" onclick="toggleEye()">
-        <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
+    <div class="wordmark">
+      <div class="wordmark-main">LVO</div>
+      <div class="wordmark-sub">Holdings LLC</div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-line"></div>
+      <div class="rule-diamond"></div>
+      <div class="rule-line r"></div>
+    </div>
+
+    <div class="auth-form" id="auth-form">
+      <label class="auth-form-label" for="pw-input">Authenticator Code</label>
+
+      <div class="timer-wrap" id="timer-wrap">
+        <svg class="timer-ring" viewBox="0 0 18 18">
+          <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
+          <circle class="timer-ring-fill" id="timer-ring-fill" cx="9" cy="9" r="7"/>
         </svg>
+        <span class="timer-label" id="timer-label">--s</span>
+      </div>
+
+      <div class="input-wrap">
+        <input class="pw-input" id="pw-input" type="password"
+          placeholder="· · · · · ·" autocomplete="one-time-code"
+          inputmode="numeric" spellcheck="false" maxlength="6">
+        <button class="eye-btn" id="eye-btn" type="button" onclick="toggleEye()">
+          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
+      <div class="err-msg" id="err-msg">Invalid access code</div>
+
+      <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
+        <span id="btn-label">Enter</span>
       </button>
     </div>
 
-    <p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
+    <div class="panel-footer">© LVO Holdings — AUTHORIZED ACCESS ONLY</div>
 
-    <div class="err-msg" id="err-msg">Invalid access code</div>
-    <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
-      <span id="btn-label">Enter</span>
-    </button>
   </div>
-
 </div>
 
-<!-- Success overlay -->
 <div id="success-overlay">
   <div class="success-text">Access Granted</div>
   <div class="success-sub">Routing to Command Center</div>
-  <div class="success-bar">
-    <div class="success-bar-fill"></div>
-  </div>
+  <div class="success-bar"><div class="success-bar-fill"></div></div>
 </div>
 
-<!-- particles.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
-// Your Vercel deployment URL (no trailing slash)
-const API_BASE = 'https://lvo-setup.vercel.app';  
+const API_BASE = 'https://lvo-setup.vercel.app';
 const DASHBOARD_URL = 'http://online.lvo-cloud.cloud/';
 
-// ─── PARTICLES ────────────────────────────────────────────
 particlesJS("particles-js", {
-  "particles": {
-    "number": { "value": 55, "density": { "enable": true, "value_area": 900 } },
-    "color": { "value": "#b8953f" },
-    "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
-    "opacity": {
-      "value": 0.22, "random": true,
-      "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.05, "sync": false }
-    },
-    "size": { "value": 2, "random": true, "anim": { "enable": false } },
-    "line_linked": { "enable": true, "distance": 160, "color": "#b8953f", "opacity": 0.09, "width": 1 },
-    "move": { "enable": true, "speed": 1.2, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
+  particles: {
+    number: { value: 55, density: { enable: true, value_area: 900 } },
+    color: { value: "#b8953f" },
+    shape: { type: "circle", stroke: { width: 0, color: "#000" } },
+    opacity: { value: 0.22, random: true, anim: { enable: true, speed: 0.6, opacity_min: 0.05, sync: false } },
+    size: { value: 2, random: true, anim: { enable: false } },
+    line_linked: { enable: true, distance: 160, color: "#b8953f", opacity: 0.09, width: 1 },
+    move: { enable: true, speed: 1.2, direction: "none", random: true, straight: false, out_mode: "out" }
   },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": { "enable": true, "mode": "grab" },
-      "onclick": { "enable": true, "mode": "push" },
-      "resize": true
-    },
-    "modes": {
-      "grab": { "distance": 180, "line_linked": { "opacity": 0.3 } },
-      "push": { "particles_nb": 2 }
-    }
+  interactivity: {
+    detect_on: "canvas",
+    events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+    modes: { grab: { distance: 180, line_linked: { opacity: 0.3 } }, push: { particles_nb: 2 } }
   },
-  "retina_detect": true
+  retina_detect: true
 });
 
-// ─── TOTP COUNTDOWN TIMER ────────────────────────────────
-const CIRCUMFERENCE = 2 * Math.PI * 7; // r=7
-
+const CIRCUMFERENCE = 2 * Math.PI * 7;
 function updateTimer() {
   const now = Math.floor(Date.now() / 1000);
-  const secondsInPeriod = now % 30;
-  const remaining = 30 - secondsInPeriod;
-  const fraction = remaining / 30;
-
+  const remaining = 30 - (now % 30);
   const fill = document.getElementById('timer-ring-fill');
   const label = document.getElementById('timer-label');
-
-  fill.style.strokeDashoffset = CIRCUMFERENCE * (1 - fraction);
+  fill.style.strokeDashoffset = CIRCUMFERENCE * (1 - remaining / 30);
   label.textContent = remaining + 's';
-
-  // Warn when code is about to expire
-  if (remaining <= 5) {
-    fill.style.stroke = 'var(--red)';
-    label.style.color = 'var(--red)';
-  } else {
-    fill.style.stroke = 'var(--gold)';
-    label.style.color = 'var(--text-muted)';
-  }
+  fill.style.stroke = remaining <= 5 ? 'var(--red)' : 'var(--gold)';
+  label.style.color = remaining <= 5 ? 'var(--red)' : 'var(--text-muted)';
 }
-
 updateTimer();
 setInterval(updateTimer, 1000);
 
-// ─── AUTH LOGIC ───────────────────────────────────────────
 const pwInput  = document.getElementById('pw-input');
 const errMsg   = document.getElementById('err-msg');
 const authBtn  = document.getElementById('auth-btn');
 const btnLabel = document.getElementById('btn-label');
 
-// Enter key support
-pwInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') attemptLogin();
-});
-
-// Auto-submit when 6 digits entered
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
 pwInput.addEventListener('input', () => {
   pwInput.classList.remove('error');
   errMsg.classList.remove('show');
-
-  // Strip non-digits
   pwInput.value = pwInput.value.replace(/\D/g, '').slice(0, 6);
-
-  if (pwInput.value.length === 6) {
-    setTimeout(attemptLogin, 120); // brief pause so user sees full code
-  }
+  if (pwInput.value.length === 6) setTimeout(attemptLogin, 120);
 });
 
 async function attemptLogin() {
   const code = pwInput.value.trim();
-  if (!code || code.length !== 6) {
-    showError('Enter the 6-digit code from your authenticator');
-    return;
-  }
-
-  // Loading state
+  if (!code || code.length !== 6) { showError('Enter the 6-digit code from your authenticator'); return; }
   authBtn.disabled = true;
   btnLabel.textContent = 'Verifying...';
-
   try {
     const res = await fetch(`${API_BASE}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code }),
     });
-
     const data = await res.json();
-
     if (res.ok && data.token) {
-      // Store JWT for use on dashboard
       sessionStorage.setItem('lvo_token', data.token);
       showSuccess();
     } else if (res.status === 429) {
@@ -699,30 +525,197 @@ function showError(msg) {
   pwInput.classList.add('error');
   setTimeout(() => pwInput.classList.remove('error'), 600);
 }
-
 function resetInput() {
-  setTimeout(() => {
-    pwInput.value = '';
-    errMsg.classList.remove('show');
-  }, 800);
+  setTimeout(() => { pwInput.value = ''; errMsg.classList.remove('show'); }, 800);
 }
-
 function showSuccess() {
   document.getElementById('success-overlay').classList.add('show');
-  setTimeout(() => {
-    window.location.href = DASHBOARD_URL;
-  }, 3000);
+  setTimeout(() => { window.location.href = DASHBOARD_URL; }, 3000);
 }
-
 function toggleEye() {
   const input = document.getElementById('pw-input');
-  const icon  = document.getElementById('eye-icon');
+  const icon = document.getElementById('eye-icon');
   const isHidden = input.type === 'password';
   input.type = isHidden ? 'text' : 'password';
   icon.innerHTML = isHidden
     ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
     : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
 }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-bg');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+  renderer.setPixelRatio(0.5);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  const clock = new THREE.Clock();
+
+  const fragmentShader = `
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform float u_time;
+uniform vec4 u_mouse;
+uniform vec2 u_resolution;
+uniform float u_brightness;
+uniform bool u_fog;
+uniform float u_scale;
+uniform float u_scale2;
+uniform int u_iters;
+uniform vec3 u_color1;
+uniform vec3 u_fog_color;
+uniform float u_speed;
+
+mat2 rot(in float a) {
+    float c = cos(a), s = sin(a);
+    return mat2(c, s, -s, c);
+}
+const mat3 m3 = mat3(0.33338, 0.56034, -0.71817, -0.87887, 0.32651, -0.15323, 0.15162, 0.69596, 0.61339) * 1.93;
+float mag2(vec2 p) { return dot(p, p); }
+float linstep(in float mn, in float mx, in float x) { return clamp((x - mn) / (mx - mn), 0., 1.); }
+float prm1 = 0.;
+vec2 bsMo = vec2(0);
+
+vec2 disp(float t) { return vec2(sin(t * 0.22) * 1., cos(t * 0.175) * 1.) * 2.; }
+float time() { return 1000. + u_time * u_speed; }
+
+vec2 map(vec3 p) {
+    vec3 p2 = p;
+    p2.xy -= disp(p.z).xy;
+    p.xy *= rot(sin(p.z + time()) * (0.1 + prm1 * 0.05) + time() * 0.09);
+    float cl = mag2(p2.xy);
+    float d = 0.;
+    p *= u_scale;
+    float z = 1.;
+    float trk = 1.;
+    float dspAmp = 0.1 + prm1 * 0.2;
+    for(int i = 0; i < u_iters; i++) {
+        p += sin(p.zxy * 0.75 * trk + time() * trk * .8) * dspAmp;
+        d -= abs(dot(cos(p), sin(p.yzx)) * z);
+        z *= u_scale2;
+        trk *= 1.4;
+        p = p * m3;
+    }
+    d = abs(d + prm1 * 3.) + prm1 * .3 - 2.5 + bsMo.y;
+    return vec2(d + cl * .2 + 0.25, cl);
+}
+
+vec4 render(in vec3 ro, in vec3 rd, float time) {
+    vec4 rez = vec4(0);
+    const float ldst = 8.;
+    vec3 lpos = vec3(disp(time + ldst) * 0.5, time + ldst);
+    float t = 1.5;
+    float fogT = 0.;
+    for(int i = 0; i < 130; i++) {
+        if(rez.a > 0.99) break;
+        vec3 pos = ro + t * rd;
+        vec2 mpv = map(pos);
+        float den = clamp(mpv.x - 0.3, 0., 1.) * 1.12;
+        float dn = clamp((mpv.x + 2.), 0., 3.);
+        vec4 col = vec4(0);
+        if(mpv.x > 0.6) {
+            col = vec4(u_color1, 0.08);
+            col *= den * den * den;
+            col.rgb *= linstep(4., -2.5, mpv.x) * 2.3;
+            float dif = clamp((den - map(pos + .8).x) / 9., 0.001, 1.);
+            dif += clamp((den - map(pos + .35).x) / 2.5, 0.001, 1.);
+            col.xyz *= den * (vec3(0.005, .045, .075) + 1.5 * vec3(0.033, 0.07, 0.03) * dif);
+        }
+        float fogC = exp(t * 0.2 - 2.2);
+        if(u_fog) col.rgba += vec4(u_fog_color, 0.1) * clamp(fogC - fogT, 0., 1.);
+        fogT = fogC;
+        rez = rez + col * (1. - rez.a);
+        t += clamp(0.5 - dn * dn * .05, 0.09, 0.3);
+    }
+    return clamp(rez, 0.0, 1.0);
+}
+
+float getsat(vec3 c) {
+    float mi = min(min(c.x, c.y), c.z);
+    float ma = max(max(c.x, c.y), c.z);
+    return (ma - mi) / (ma + 1e-7);
+}
+
+vec3 iLerp(in vec3 a, in vec3 b, in float x) {
+    vec3 ic = mix(a, b, x) + vec3(1e-6, 0., 0.);
+    float sd = abs(getsat(ic) - mix(getsat(a), getsat(b), x));
+    vec3 dir = normalize(vec3(2. * ic.x - ic.y - ic.z, 2. * ic.y - ic.x - ic.z, 2. * ic.z - ic.y - ic.x));
+    float lgt = dot(vec3(1.0), ic);
+    float ff = dot(dir, normalize(ic));
+    ic += 1.5 * dir * sd * ff * lgt;
+    return clamp(ic, 0., 1.);
+}
+
+void main() {
+    vec2 q = gl_FragCoord.xy / u_resolution.xy;
+    vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+    bsMo = (u_mouse.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+
+    float scaledTime = time() * 3.0;
+    vec3 ro = vec3(0, 0, scaledTime);
+    ro += vec3(sin(time()) * 0.5, sin(time() * 1.) * 0., 0);
+    float dspAmp = .85;
+    ro.xy += disp(ro.z) * dspAmp;
+    float tgtDst = 3.5;
+    vec3 target = normalize(ro - vec3(disp(scaledTime + tgtDst) * dspAmp, scaledTime + tgtDst));
+    ro.x -= bsMo.x * 2.;
+    vec3 rightdir = normalize(cross(target, vec3(0, 1, 0)));
+    vec3 updir = normalize(cross(rightdir, target));
+    rightdir = normalize(cross(updir, target));
+    vec3 rd = normalize((p.x * rightdir + p.y * updir) * 1. - target);
+    rd.xy *= rot(-disp(scaledTime + 3.5).x * 0.2 + bsMo.x);
+    vec4 scn = render(ro, rd, scaledTime);
+
+    vec3 col = scn.rgb;
+    col = iLerp(col.bgr, col.rgb, clamp(1. - prm1, 0.05, 1.));
+    col = pow(col, vec3(.55, 0.65, 0.6)) * vec3(1., .97, .9);
+    col *= pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.12) * 0.7 + 0.3;
+
+    gl_FragColor = vec4(col * u_brightness, 1.0);
+}`;
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      u_time:       { value: 0 },
+      u_fog:        { value: true },
+      u_speed:      { value: 0.18 },
+      u_scale:      { value: 0.55 },
+      u_scale2:     { value: 0.50 },
+      u_iters:      { value: 7 },
+      u_color1:     { value: new THREE.Color("#a0b8d8") },
+      u_fog_color:  { value: new THREE.Color("#000510") },
+      u_brightness: { value: 0.6 },
+      u_mouse:      { value: new THREE.Vector4() },
+      u_resolution: { value: new THREE.Vector2(window.innerWidth * 0.5, window.innerHeight * 0.5) },
+    },
+    vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position,1.0); }`,
+    fragmentShader
+  });
+
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2,2), material);
+  scene.add(quad);
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    material.uniforms.u_resolution.value.set(window.innerWidth*0.5, window.innerHeight*0.5);
+  });
+
+  let lastTime = 0;
+  function render(ts) {
+    requestAnimationFrame(render);
+    if (ts - lastTime < 1000/24) return;
+    lastTime = ts;
+    if (clock.getElapsedTime() > 21600) clock.start();
+    material.uniforms.u_time.value = clock.getElapsedTime();
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(render);
+})();
 </script>
 </body>
 </html>
