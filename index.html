@@ -379,6 +379,13 @@ async function attemptLogin() {
       document.cookie = 'lvo_token=' + data.token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
       document.cookie = 'lvo_expiry=' + expiry + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
 
+      // Carry the real Supabase session across too, same domain/expiry.
+      // The dashboard reads these instead of holding any password.
+      if (data.sb_access_token && data.sb_refresh_token) {
+        document.cookie = 'sb_access_token=' + data.sb_access_token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
+        document.cookie = 'sb_refresh_token=' + data.sb_refresh_token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
+      }
+
       showSuccess();
     } else if (res.status === 429) {
       showError(data.error || 'Too many attempts. Wait and try again.');
