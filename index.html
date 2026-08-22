@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LVO Holdings LLC</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,6 +73,9 @@ body::after {
 .sigil-wrap {
   display: flex; justify-content: center; margin-bottom: 20px;
   opacity: 0; animation: fadeIn 1s 0.9s forwards;
+}
+.sigil-logo {
+  width: 84px; height: 84px; object-fit: contain;
 }
 
 .title {
@@ -224,27 +228,7 @@ body::after {
   <div class="panel">
 
     <div class="sigil-wrap">
-      <svg width="90" height="66" viewBox="0 0 90 66" fill="none">
-        <polygon points="45,2 80,21 80,45 45,64 10,45 10,21" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
-        <polygon points="45,10 68,23 68,43 45,56 22,43 22,23" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
-        <line x1="45" y1="2" x2="45" y2="64" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/>
-        <line x1="10" y1="33" x2="80" y2="33" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
-        <line x1="10" y1="21" x2="80" y2="45" stroke="rgba(255,255,255,0.05)" stroke-width="0.4"/>
-        <line x1="10" y1="45" x2="80" y2="21" stroke="rgba(255,255,255,0.05)" stroke-width="0.4"/>
-        <line x1="45" y1="14" x2="30" y2="6" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
-        <line x1="30" y1="6" x2="27" y2="11" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <line x1="45" y1="14" x2="60" y2="6" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
-        <line x1="60" y1="6" x2="63" y2="11" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <line x1="45" y1="50" x2="34" y2="62" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
-        <line x1="45" y1="50" x2="56" y2="62" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
-        <line x1="10" y1="33" x2="3" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <line x1="10" y1="33" x2="3" y2="38" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <line x1="80" y1="33" x2="87" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <line x1="80" y1="33" x2="87" y2="38" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-        <ellipse cx="45" cy="33" rx="6" ry="4" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>
-        <circle cx="45" cy="33" r="1.5" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.6"/>
-        <circle cx="45" cy="33" r="0.7" fill="rgba(255,255,255,0.4)"/>
-      </svg>
+      <img class="sigil-logo" src="assets/logo.png" alt="LVO">
     </div>
 
     <h1 class="title">𝐋𝐕𝐎</h1>
