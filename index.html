@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   width: 100%; height: 100%;
   overflow: hidden;
@@ -16,17 +15,14 @@ html, body {
   font-family: 'Share Tech Mono', monospace;
   cursor: crosshair;
 }
-
 canvas#shader-bg { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; }
 #particles-js { position: fixed; inset: 0; z-index: 1; }
-
 body::after {
   content: '';
   position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events: none; z-index: 9998; opacity: 0.35; mix-blend-mode: overlay;
 }
-
 .corner {
   position: fixed; width: 60px; height: 60px;
   pointer-events: none; z-index: 2; opacity: 0.18;
@@ -35,19 +31,16 @@ body::after {
 .corner--tr { top: 32px; right: 32px; border-top: 1px solid rgba(255,255,255,0.4); border-right: 1px solid rgba(255,255,255,0.4); }
 .corner--bl { bottom: 32px; left: 32px; border-bottom: 1px solid rgba(255,255,255,0.4); border-left: 1px solid rgba(255,255,255,0.4); }
 .corner--br { bottom: 32px; right: 32px; border-bottom: 1px solid rgba(255,255,255,0.4); border-right: 1px solid rgba(255,255,255,0.4); }
-
 .site-label {
   position: fixed; bottom: 36px; left: 0; right: 0;
   text-align: center; font-size: 9px; letter-spacing: 0.3em;
   color: rgba(255,255,255,0.1); text-transform: uppercase; z-index: 10;
   opacity: 0; animation: fadeUp 1s ease 2.8s forwards;
 }
-
 #stage {
   position: fixed; inset: 0; z-index: 5;
   display: flex; align-items: center; justify-content: center;
 }
-
 .panel {
   width: 320px;
   background: rgba(0,0,0,0.62);
@@ -69,7 +62,6 @@ body::after {
   width: 22px; height: 22px;
   border-bottom: 1px solid rgba(255,255,255,0.3); border-right: 1px solid rgba(255,255,255,0.3);
 }
-
 .sigil-wrap {
   display: flex; justify-content: center; margin-bottom: 20px;
   opacity: 0; animation: fadeIn 1s 0.9s forwards;
@@ -77,7 +69,6 @@ body::after {
 .sigil-logo {
   width: 84px; height: 84px; object-fit: contain;
 }
-
 .title {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem; font-weight: 900;
@@ -85,14 +76,12 @@ body::after {
   text-align: center; margin-bottom: 4px;
   opacity: 0; animation: fadeIn 0.8s 1s forwards;
 }
-
 .subtitle {
   font-size: 0.52rem; color: rgba(255,255,255,0.2);
   text-align: center; letter-spacing: 0.25em;
   text-transform: uppercase; margin-bottom: 28px;
   opacity: 0; animation: fadeIn 0.8s 1.1s forwards;
 }
-
 .rule {
   width: 100%; display: flex; align-items: center; gap: 8px; margin-bottom: 22px;
   opacity: 0; animation: fadeIn 0.8s 1.15s forwards;
@@ -100,7 +89,6 @@ body::after {
 .rule-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.12)); }
 .rule-line.r { background: linear-gradient(to left, transparent, rgba(255,255,255,0.12)); }
 .rule-diamond { width: 4px; height: 4px; background: rgba(255,255,255,0.2); transform: rotate(45deg); }
-
 .auth-form {
   display: flex; flex-direction: column; gap: 12px;
   opacity: 0; animation: fadeUp 1s ease 1.3s forwards;
@@ -109,7 +97,6 @@ body::after {
   font-size: 0.58rem; letter-spacing: 0.35em;
   color: rgba(255,255,255,0.2); text-transform: uppercase;
 }
-
 .timer-wrap { display: flex; align-items: center; gap: 10px; align-self: flex-end; opacity: 0.6; }
 .timer-ring { width: 18px; height: 18px; transform: rotate(-90deg); }
 .timer-ring-bg { fill: none; stroke: #2a2a2a; stroke-width: 2; }
@@ -119,7 +106,6 @@ body::after {
   transition: stroke-dashoffset 1s linear, stroke 0.5s;
 }
 .timer-label { font-size: 9px; letter-spacing: 0.2em; color: rgba(255,255,255,0.2); min-width: 30px; }
-
 .input-wrap { position: relative; width: 100%; }
 .pw-input {
   width: 100%; background: transparent; border: none;
@@ -133,14 +119,12 @@ body::after {
 .pw-input::placeholder { color: rgba(255,255,255,0.15); letter-spacing: 0.2em; font-size: 12px; }
 .pw-input:focus { border-bottom-color: rgba(255,255,255,0.35); }
 .pw-input.error { border-bottom-color: #c0392b; animation: shake 0.4s ease; }
-
 .eye-btn {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   background: none; border: none; color: rgba(255,255,255,0.2);
   cursor: pointer; padding: 4px; transition: color 0.2s; line-height: 0;
 }
 .eye-btn:hover { color: rgba(255,255,255,0.6); }
-
 .totp-hint {
   font-size: 0.52rem; letter-spacing: 0.15em;
   color: rgba(255,255,255,0.15); text-align: center; line-height: 1.6;
@@ -151,7 +135,6 @@ body::after {
   opacity: 0; transition: opacity 0.3s;
 }
 .err-msg.show { opacity: 1; }
-
 .auth-btn {
   width: 100%; background: transparent;
   border: 1px solid rgba(255,255,255,0.1);
@@ -173,13 +156,11 @@ body::after {
 .auth-btn span { position: relative; z-index: 1; }
 .auth-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .auth-btn:disabled::before { display: none; }
-
 .panel-footer {
   margin-top: 24px; font-size: 0.45rem;
   color: rgba(255,255,255,0.1); letter-spacing: 0.18em;
   text-align: center; opacity: 0; animation: fadeIn 0.6s 1.8s forwards;
 }
-
 #success-overlay {
   position: fixed; inset: 0; background: #000; z-index: 9000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -197,7 +178,6 @@ body::after {
 #success-overlay.show .success-bar { opacity: 1; animation: fadeIn 0.4s ease 0.9s forwards; }
 .success-bar-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: rgba(255,255,255,0.4); }
 #success-overlay.show .success-bar-fill { animation: fillBar 1.6s cubic-bezier(0.22,1,0.36,1) 1s forwards; }
-
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { to { opacity: 1; } }
@@ -206,84 +186,69 @@ body::after {
   40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(4px); }
 }
 @keyframes fillBar { from { width: 0; } to { width: 100%; } }
-
 @media (max-width: 420px) { .panel { width: 88vw; padding: 32px 22px 24px; } }
 </style>
 </head>
 <body>
-
 <canvas id="shader-bg"></canvas>
 <div id="particles-js"></div>
-
-<audio id="ambient" src="https://raw.githubusercontent.com/lvoholdings00-sys/LVO-Directory/main/assets/Project18r.mp3" loop preload="auto"></audio>
-
+<audio id="ambient" src="assets/Project18r.mp3" loop preload="none"></audio>
 <div class="corner corner--tl"></div>
 <div class="corner corner--tr"></div>
 <div class="corner corner--bl"></div>
 <div class="corner corner--br"></div>
-
 <div class="site-label">lvo-cloud.cloud &nbsp;·&nbsp; classified access terminal</div>
-
 <div id="stage">
-  <div class="panel">
-
-    <div class="sigil-wrap">
-      <img class="sigil-logo" src="assets/logo.png" alt="LVO">
-    </div>
-
-    <h1 class="title">𝐋𝐕𝐎</h1>
-    <p class="subtitle">classified access terminal</p>
-
-    <div class="rule">
-      <div class="rule-line"></div>
-      <div class="rule-diamond"></div>
-      <div class="rule-line r"></div>
-    </div>
-
-    <div class="auth-form" id="auth-form">
-      <label class="auth-form-label" for="pw-input">Authenticator Code</label>
-      <div class="timer-wrap" id="timer-wrap">
-        <svg class="timer-ring" viewBox="0 0 18 18">
-          <circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
-          <circle class="timer-ring-fill" id="timer-ring-fill" cx="9" cy="9" r="7"/>
-        </svg>
-        <span class="timer-label" id="timer-label">--s</span>
-      </div>
-      <div class="input-wrap">
-        <input class="pw-input" id="pw-input" type="password"
-          placeholder="· · · · · ·" autocomplete="one-time-code"
-          inputmode="numeric" spellcheck="false" maxlength="6">
-        <button class="eye-btn" id="eye-btn" type="button" onclick="toggleEye()">
-          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-      </div>
-      <p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
-      <div class="err-msg" id="err-msg">Invalid access code</div>
-      <button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
-        <span id="btn-label">Enter</span>
-      </button>
-    </div>
-
-    <div class="panel-footer">© LVO Holdings — AUTHORIZED ACCESS ONLY</div>
-  </div>
+<div class="panel">
+<div class="sigil-wrap">
+<img class="sigil-logo" src="assets/logo.png" alt="LVO">
 </div>
-
+<h1 class="title">𝐋𝐕𝐎</h1>
+<p class="subtitle">classified access terminal</p>
+<div class="rule">
+<div class="rule-line"></div>
+<div class="rule-diamond"></div>
+<div class="rule-line r"></div>
+</div>
+<div class="auth-form" id="auth-form">
+<label class="auth-form-label" for="pw-input">Authenticator Code</label>
+<div class="timer-wrap" id="timer-wrap">
+<svg class="timer-ring" viewBox="0 0 18 18">
+<circle class="timer-ring-bg" cx="9" cy="9" r="7"/>
+<circle class="timer-ring-fill" id="timer-ring-fill" cx="9" cy="9" r="7"/>
+</svg>
+<span class="timer-label" id="timer-label">--s</span>
+</div>
+<div class="input-wrap">
+<input class="pw-input" id="pw-input" type="password"
+placeholder="· · · · · ·" autocomplete="one-time-code"
+inputmode="numeric" spellcheck="false" maxlength="6">
+<button class="eye-btn" id="eye-btn" type="button" onclick="toggleEye()">
+<svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>
+</button>
+</div>
+<p class="totp-hint">Enter the 6-digit code for LVO Holdings LLC</p>
+<div class="err-msg" id="err-msg">Invalid access code</div>
+<button class="auth-btn" id="auth-btn" onclick="attemptLogin()">
+<span id="btn-label">Enter</span>
+</button>
+</div>
+<div class="panel-footer">© LVO Holdings — AUTHORIZED ACCESS ONLY</div>
+</div>
+</div>
 <div id="success-overlay">
-  <div class="success-text">Access Granted</div>
-  <div class="success-sub">Routing to Command Center</div>
-  <div class="success-bar"><div class="success-bar-fill"></div></div>
+<div class="success-text">Access Granted</div>
+<div class="success-sub">Routing to Command Center</div>
+<div class="success-bar"><div class="success-bar-fill"></div></div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 <script>
 const API_BASE = 'https://lvo-setup.vercel.app';
-
 // Session duration: 2 minutes 30 seconds in milliseconds
 const SESSION_MS = 150000;
-
 // Destination — online portal
 const DEST = 'https://online.lvo-cloud.cloud/';
 
@@ -329,9 +294,9 @@ updateTimer();
 setInterval(updateTimer, 1000);
 
 /* ── Login logic ── */
-const pwInput  = document.getElementById('pw-input');
-const errMsg   = document.getElementById('err-msg');
-const authBtn  = document.getElementById('auth-btn');
+const pwInput = document.getElementById('pw-input');
+const errMsg = document.getElementById('err-msg');
+const authBtn = document.getElementById('auth-btn');
 const btnLabel = document.getElementById('btn-label');
 
 pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
@@ -358,18 +323,15 @@ async function attemptLogin() {
       // Set session expiry to exactly SESSION_MS from now
       const expiry = Date.now() + SESSION_MS;
       const expiryUTC = new Date(expiry).toUTCString();
-
       // Set cookies on the shared parent domain so online.lvo-cloud.cloud can read them
       document.cookie = 'lvo_token=' + data.token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
       document.cookie = 'lvo_expiry=' + expiry + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
-
       // Carry the real Supabase session across too, same domain/expiry.
       // The dashboard reads these instead of holding any password.
       if (data.sb_access_token && data.sb_refresh_token) {
         document.cookie = 'sb_access_token=' + data.sb_access_token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
         document.cookie = 'sb_refresh_token=' + data.sb_refresh_token + '; expires=' + expiryUTC + '; domain=.lvo-cloud.cloud; path=/; SameSite=Lax';
       }
-
       showSuccess();
     } else if (res.status === 429) {
       showError(data.error || 'Too many attempts. Wait and try again.');
@@ -395,18 +357,21 @@ function showError(msg) {
   pwInput.classList.add('error');
   setTimeout(() => pwInput.classList.remove('error'), 600);
 }
+
 function resetInput() {
   setTimeout(() => { pwInput.value = ''; errMsg.classList.remove('show'); }, 800);
 }
+
 function showSuccess() {
   document.getElementById('success-overlay').classList.add('show');
   // Wait 3.5s — gives the browser time to fully commit both cookies
   // to .lvo-cloud.cloud before online.lvo-cloud.cloud tries to read them
   setTimeout(() => { window.location.replace(DEST); }, 3500);
 }
+
 function toggleEye() {
   const input = document.getElementById('pw-input');
-  const icon  = document.getElementById('eye-icon');
+  const icon = document.getElementById('eye-icon');
   const isHidden = input.type === 'password';
   input.type = isHidden ? 'text' : 'password';
   icon.innerHTML = isHidden
@@ -414,7 +379,6 @@ function toggleEye() {
     : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
 }
 </script>
-
 <!-- WebGL shader background -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script>
@@ -426,119 +390,124 @@ function toggleEye() {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
   const clock = new THREE.Clock();
+
   const fragmentShader = `
-#ifdef GL_ES
-precision highp float;
-#endif
-uniform float u_time;
-uniform vec4 u_mouse;
-uniform vec2 u_resolution;
-uniform float u_brightness;
-uniform bool u_fog;
-uniform float u_scale;
-uniform float u_scale2;
-uniform int u_iters;
-uniform vec3 u_color1;
-uniform vec3 u_fog_color;
-uniform float u_speed;
-mat2 rot(in float a){float c=cos(a),s=sin(a);return mat2(c,s,-s,c);}
-const mat3 m3=mat3(0.33338,0.56034,-0.71817,-0.87887,0.32651,-0.15323,0.15162,0.69596,0.61339)*1.93;
-float mag2(vec2 p){return dot(p,p);}
-float linstep(in float mn,in float mx,in float x){return clamp((x-mn)/(mx-mn),0.,1.);}
-float prm1=0.;
-vec2 bsMo=vec2(0);
-vec2 disp(float t){return vec2(sin(t*0.22)*1.,cos(t*0.175)*1.)*2.;}
-float time(){return 1000.+u_time*u_speed;}
-vec2 map(vec3 p){
-  vec3 p2=p;p2.xy-=disp(p.z).xy;
-  p.xy*=rot(sin(p.z+time())*(0.1+prm1*0.05)+time()*0.09);
-  float cl=mag2(p2.xy);float d=0.;
-  p*=u_scale;float z=1.;float trk=1.;float dspAmp=0.1+prm1*0.2;
-  for(int i=0;i<u_iters;i++){
-    p+=sin(p.zxy*0.75*trk+time()*trk*.8)*dspAmp;
-    d-=abs(dot(cos(p),sin(p.yzx))*z);
-    z*=u_scale2;trk*=1.4;p=p*m3;
-  }
-  d=abs(d+prm1*3.)+prm1*.3-2.5+bsMo.y;
-  return vec2(d+cl*.2+0.25,cl);
-}
-vec4 render(in vec3 ro,in vec3 rd,float time){
-  vec4 rez=vec4(0);const float ldst=8.;
-  vec3 lpos=vec3(disp(time+ldst)*0.5,time+ldst);
-  float t=1.5;float fogT=0.;
-  for(int i=0;i<130;i++){
-    if(rez.a>0.99)break;
-    vec3 pos=ro+t*rd;vec2 mpv=map(pos);
-    float den=clamp(mpv.x-0.3,0.,1.)*1.12;
-    float dn=clamp((mpv.x+2.),0.,3.);vec4 col=vec4(0);
-    if(mpv.x>0.6){
-      col=vec4(u_color1,0.08);col*=den*den*den;
-      col.rgb*=linstep(4.,-2.5,mpv.x)*2.3;
-      float dif=clamp((den-map(pos+.8).x)/9.,0.001,1.);
-      dif+=clamp((den-map(pos+.35).x)/2.5,0.001,1.);
-      col.xyz*=den*(vec3(0.005,.045,.075)+1.5*vec3(0.033,0.07,0.03)*dif);
+  #ifdef GL_ES
+  precision highp float;
+  #endif
+  uniform float u_time;
+  uniform vec4 u_mouse;
+  uniform vec2 u_resolution;
+  uniform float u_brightness;
+  uniform bool u_fog;
+  uniform float u_scale;
+  uniform float u_scale2;
+  uniform int u_iters;
+  uniform vec3 u_color1;
+  uniform vec3 u_fog_color;
+  uniform float u_speed;
+  mat2 rot(in float a){float c=cos(a),s=sin(a);return mat2(c,s,-s,c);}
+  const mat3 m3=mat3(0.33338,0.56034,-0.71817,-0.87887,0.32651,-0.15323,0.15162,0.69596,0.61339)*1.93;
+  float mag2(vec2 p){return dot(p,p);}
+  float linstep(in float mn,in float mx,in float x){return clamp((x-mn)/(mx-mn),0.,1.);}
+  float prm1=0.;
+  vec2 bsMo=vec2(0);
+  vec2 disp(float t){return vec2(sin(t*0.22)*1.,cos(t*0.175)*1.)*2.;}
+  float time(){return 1000.+u_time*u_speed;}
+  vec2 map(vec3 p){
+    vec3 p2=p;p2.xy-=disp(p.z).xy;
+    p.xy*=rot(sin(p.z+time())*(0.1+prm1*0.05)+time()*0.09);
+    float cl=mag2(p2.xy);float d=0.;
+    p*=u_scale;float z=1.;float trk=1.;float dspAmp=0.1+prm1*0.2;
+    for(int i=0;i<u_iters;i++){
+      p+=sin(p.zxy*0.75*trk+time()*trk*.8)*dspAmp;
+      d-=abs(dot(cos(p),sin(p.yzx))*z);
+      z*=u_scale2;trk*=1.4;p=p*m3;
     }
-    float fogC=exp(t*0.2-2.2);
-    if(u_fog)col.rgba+=vec4(u_fog_color,0.1)*clamp(fogC-fogT,0.,1.);
-    fogT=fogC;rez=rez+col*(1.-rez.a);
-    t+=clamp(0.5-dn*dn*.05,0.09,0.3);
+    d=abs(d+prm1*3.)+prm1*.3-2.5+bsMo.y;
+    return vec2(d+cl*.2+0.25,cl);
   }
-  return clamp(rez,0.0,1.0);
-}
-float getsat(vec3 c){float mi=min(min(c.x,c.y),c.z);float ma=max(max(c.x,c.y),c.z);return(ma-mi)/(ma+1e-7);}
-vec3 iLerp(in vec3 a,in vec3 b,in float x){
-  vec3 ic=mix(a,b,x)+vec3(1e-6,0.,0.);
-  float sd=abs(getsat(ic)-mix(getsat(a),getsat(b),x));
-  vec3 dir=normalize(vec3(2.*ic.x-ic.y-ic.z,2.*ic.y-ic.x-ic.z,2.*ic.z-ic.y-ic.x));
-  float lgt=dot(vec3(1.0),ic);float ff=dot(dir,normalize(ic));
-  ic+=1.5*dir*sd*ff*lgt;return clamp(ic,0.,1.);
-}
-void main(){
-  vec2 q=gl_FragCoord.xy/u_resolution.xy;
-  vec2 p=(gl_FragCoord.xy-0.5*u_resolution.xy)/u_resolution.y;
-  bsMo=(u_mouse.xy-0.5*u_resolution.xy)/u_resolution.y;
-  float scaledTime=time()*3.0;
-  vec3 ro=vec3(0,0,scaledTime);
-  ro+=vec3(sin(time())*0.5,sin(time()*1.)*0.,0);
-  float dspAmp=.85;ro.xy+=disp(ro.z)*dspAmp;
-  float tgtDst=3.5;
-  vec3 target=normalize(ro-vec3(disp(scaledTime+tgtDst)*dspAmp,scaledTime+tgtDst));
-  ro.x-=bsMo.x*2.;
-  vec3 rightdir=normalize(cross(target,vec3(0,1,0)));
-  vec3 updir=normalize(cross(rightdir,target));
-  rightdir=normalize(cross(updir,target));
-  vec3 rd=normalize((p.x*rightdir+p.y*updir)*1.-target);
-  rd.xy*=rot(-disp(scaledTime+3.5).x*0.2+bsMo.x);
-  vec4 scn=render(ro,rd,scaledTime);
-  vec3 col=scn.rgb;
-  col=iLerp(col.bgr,col.rgb,clamp(1.-prm1,0.05,1.));
-  col=pow(col,vec3(.55,0.65,0.6))*vec3(1.,.97,.9);
-  col*=pow(16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y),0.12)*0.7+0.3;
-  gl_FragColor=vec4(col*u_brightness,1.0);
-}`;
+  vec4 render(in vec3 ro,in vec3 rd,float time){
+    vec4 rez=vec4(0);const float ldst=8.;
+    vec3 lpos=vec3(disp(time+ldst)*0.5,time+ldst);
+    float t=1.5;float fogT=0.;
+    for(int i=0;i<130;i++){
+      if(rez.a>0.99)break;
+      vec3 pos=ro+t*rd;vec2 mpv=map(pos);
+      float den=clamp(mpv.x-0.3,0.,1.)*1.12;
+      float dn=clamp((mpv.x+2.),0.,3.);vec4 col=vec4(0);
+      if(mpv.x>0.6){
+        col=vec4(u_color1,0.08);col*=den*den*den;
+        col.rgb*=linstep(4.,-2.5,mpv.x)*2.3;
+        float dif=clamp((den-map(pos+.8).x)/9.,0.001,1.);
+        dif+=clamp((den-map(pos+.35).x)/2.5,0.001,1.);
+        col.xyz*=den*(vec3(0.005,.045,.075)+1.5*vec3(0.033,0.07,0.03)*dif);
+      }
+      float fogC=exp(t*0.2-2.2);
+      if(u_fog)col.rgba+=vec4(u_fog_color,0.1)*clamp(fogC-fogT,0.,1.);
+      fogT=fogC;rez=rez+col*(1.-rez.a);
+      t+=clamp(0.5-dn*dn*.05,0.09,0.3);
+    }
+    return clamp(rez,0.0,1.0);
+  }
+  float getsat(vec3 c){float mi=min(min(c.x,c.y),c.z);float ma=max(max(c.x,c.y),c.z);return(ma-mi)/(ma+1e-7);}
+  vec3 iLerp(in vec3 a,in vec3 b,in float x){
+    vec3 ic=mix(a,b,x)+vec3(1e-6,0.,0.);
+    float sd=abs(getsat(ic)-mix(getsat(a),getsat(b),x));
+    vec3 dir=normalize(vec3(2.*ic.x-ic.y-ic.z,2.*ic.y-ic.x-ic.z,2.*ic.z-ic.y-ic.x));
+    float lgt=dot(vec3(1.0),ic);float ff=dot(dir,normalize(ic));
+    ic+=1.5*dir*sd*ff*lgt;return clamp(ic,0.,1.);
+  }
+  void main(){
+    vec2 q=gl_FragCoord.xy/u_resolution.xy;
+    vec2 p=(gl_FragCoord.xy-0.5*u_resolution.xy)/u_resolution.y;
+    bsMo=(u_mouse.xy-0.5*u_resolution.xy)/u_resolution.y;
+    float scaledTime=time()*3.0;
+    vec3 ro=vec3(0,0,scaledTime);
+    ro+=vec3(sin(time())*0.5,sin(time()*1.)*0.,0);
+    float dspAmp=.85;ro.xy+=disp(ro.z)*dspAmp;
+    float tgtDst=3.5;
+    vec3 target=normalize(ro-vec3(disp(scaledTime+tgtDst)*dspAmp,scaledTime+tgtDst));
+    ro.x-=bsMo.x*2.;
+    vec3 rightdir=normalize(cross(target,vec3(0,1,0)));
+    vec3 updir=normalize(cross(rightdir,target));
+    rightdir=normalize(cross(updir,target));
+    vec3 rd=normalize((p.x*rightdir+p.y*updir)*1.-target);
+    rd.xy*=rot(-disp(scaledTime+3.5).x*0.2+bsMo.x);
+    vec4 scn=render(ro,rd,scaledTime);
+    vec3 col=scn.rgb;
+    col=iLerp(col.bgr,col.rgb,clamp(1.-prm1,0.05,1.));
+    col=pow(col,vec3(.55,0.65,0.6))*vec3(1.,.97,.9);
+    col*=pow(16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y),0.12)*0.7+0.3;
+    gl_FragColor=vec4(col*u_brightness,1.0);
+  }`;
+
   const material = new THREE.ShaderMaterial({
     uniforms: {
-      u_time:       { value: 0 },
-      u_fog:        { value: true },
-      u_speed:      { value: 0.34 },
-      u_scale:      { value: 1.03 },
-      u_scale2:     { value: 0.50 },
-      u_iters:      { value: 7 },
-      u_color1:     { value: new THREE.Color(225/255,217/255,209/255) },
-      u_fog_color:  { value: new THREE.Color(0,0,0) },
+      u_time: { value: 0 },
+      u_fog: { value: true },
+      u_speed: { value: 0.34 },
+      u_scale: { value: 1.03 },
+      u_scale2: { value: 0.50 },
+      u_iters: { value: 7 },
+      u_color1: { value: new THREE.Color(225/255,217/255,209/255) },
+      u_fog_color: { value: new THREE.Color(0,0,0) },
       u_brightness: { value: 1.26 },
-      u_mouse:      { value: new THREE.Vector4() },
+      u_mouse: { value: new THREE.Vector4() },
       u_resolution: { value: new THREE.Vector2(window.innerWidth*0.5,window.innerHeight*0.5) },
     },
     vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`,
     fragmentShader
   });
+
   const quad = new THREE.Mesh(new THREE.PlaneGeometry(2,2), material);
   scene.add(quad);
+
   window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     material.uniforms.u_resolution.value.set(window.innerWidth*0.5,window.innerHeight*0.5);
   });
+
   let lastTime = 0;
   function render(ts) {
     requestAnimationFrame(render);
