@@ -247,10 +247,25 @@ inputmode="numeric" spellcheck="false" maxlength="6">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 <script>
 const API_BASE = 'https://lvo-setup.vercel.app';
-// Session duration: 2 minutes 30 seconds in milliseconds
-const SESSION_MS = 150000;
-// Destination — online portal
-const DEST = 'https://online.lvo-cloud.cloud/';
+// Session duration: 1 minute in milliseconds
+const SESSION_MS = 60000;
+// Destination — defaults to the online portal, but honors a same-site
+// ?return_to= param so satellite sites (status/dash/docs/support) can
+// send someone here to pass MFA and land back on themselves afterward.
+function resolveDest() {
+  const requested = new URLSearchParams(window.location.search).get('return_to');
+  const fallback = 'https://online.lvo-cloud.cloud/';
+  if (!requested) return fallback;
+  try {
+    const u = new URL(requested);
+    const host = u.hostname;
+    const allowed = host === 'lvo-cloud.cloud' || host.endsWith('.lvo-cloud.cloud');
+    return (allowed && u.protocol === 'https:') ? u.href : fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+const DEST = resolveDest();
 
 /* ── Ambient audio ── */
 const ambient = document.getElementById('ambient');
